@@ -1,0 +1,32 @@
+<script setup>
+import {onMounted,ref} from 'vue'
+import { RouterLink, RouterView } from 'vue-router'
+import Navbar from '@/components/Navbar.vue';
+
+let isDark = ref()
+onMounted( () => {
+  localStorage.getItem('dark') ? isDark.value = true : isDark.value = false
+})
+
+</script>
+
+<template>
+  <div class="box" :class="isDark ? 'dark' : '' ">
+    <Navbar @darkTheme="isDark = !isDark" />
+    
+    <RouterView class="main__content" />
+  </div>
+</template>
+
+<style>
+#app .box{
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-clr);
+}
+.main__content{
+  width: 80%;
+  color: var(--txt-clr);
+}
+</style>

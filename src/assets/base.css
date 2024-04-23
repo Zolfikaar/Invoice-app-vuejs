@@ -1,0 +1,63 @@
+:root {
+  --primary-clr: #7C5DFA;
+  --primary-light: #9277FF;
+  --danger-clr: #EC5757;
+  --danger-hover: #ff9277;
+  --txt-clr:#0C0E16;
+  --txt-gray: #888EB0;
+  --txt-secondary:#7E88C3;
+  --elements-clr: #fff;
+  --bg-clr:#F8F8FB;
+  --btn-draft: #373b53; 
+  --cancel-btn: #F9FAFE;
+  --btn-pending: #ff8f00;
+  --btn-paid: #33d69f;
+}
+.dark {
+  --bg-clr: #141625;
+  --elements-clr: #1E2139;
+  --txt-clr:#fff;
+  --txt-gray: #DFE3FA;
+  --txt-secondary: #DFE3FA;
+  --btn-draft: #DFE3FA;
+  --cancel-btn: #252945;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+body {
+  background-color: var(--bg-clr);
+  min-height: 100vh;
+  line-height: 18px;
+  font-size: 13px;
+  letter-spacing: -0.1px;
+  font-weight: normal;
+}
+h1{
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 33px;
+  letter-spacing: -1px;
+}
+h2{
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 22px;
+  letter-spacing: -.75px;
+}
+h3{
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: -.25px;
+}
+h4{
+  font-weight: bold;
+  font-size: 15px;
+  line-height: 15px;
+  letter-spacing: -.25px;
+}
