@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..600&display=swap');
 :root {
   --primary-clr: #7C5DFA;
   --primary-light: #9277FF;
@@ -36,6 +37,8 @@ body {
   font-size: 13px;
   letter-spacing: -0.1px;
   font-weight: normal;
+  font-family: "League Spartan", sans-serif;
+  font-optical-sizing: auto;
 }
 h1{
   font-weight: bold;
@@ -60,4 +63,27 @@ h4{
   font-size: 15px;
   line-height: 15px;
   letter-spacing: -.25px;
+}
+
+.paid-btn{
+  background-color: rgba(51, 214, 159, 0.05);
+  color: var(--btn-paid);
+}
+.pending-btn{
+  background-color: rgba(255, 143, 0, 0.05);
+  color: var(--btn-pending);
+}
+.draft-btn{
+  background-color: rgba(55, 59, 83, 0.05);
+  color: var(--btn-draft);
+}
+
+.invoices .invoice .invoice__status.paid-btn .layer span{
+  background-color: var(--btn-paid);
+}
+.invoices .invoice .invoice__status.draft-btn .layer span{
+  background-color: var(--btn-draft);
+}
+.invoices .invoice .invoice__status.pending-btn .layer span{
+  background-color: var(--btn-pending);
 }

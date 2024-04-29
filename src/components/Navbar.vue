@@ -40,7 +40,7 @@ onMounted( () => {
       </div>
       <hr>
       <div class="avatar">
-        <img src="/public/image-avatar.jpg" alt="">
+        <img src="/image-avatar.jpg" alt="">
       </div>
     </div>
   </div>
