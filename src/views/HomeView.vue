@@ -1,9 +1,34 @@
 <script setup>
+import {ref, onMounted} from 'vue'
 import illustration from '@/components/icons/illustrationEmpty.vue'
 import plusIcon from '@/components/icons/IconPlus.vue'
 import arrowDownIcon from '@/components/icons/IconArrowDown.vue'
 import arrowRightIcon from '@/components/icons/IconArrowRight.vue'
 import checkIcon from '@/components/icons/IconCheck.vue'
+
+let showFilters = ref(false)
+const showHideFiltersBox = () => {
+  showFilters.value = !showFilters.value
+}
+
+let filters = ref([
+  {
+    'name':'draft',
+     'val':false,
+  },
+  {
+    'name':'pending',
+    'val': false,
+  },
+  {
+    'name':'paid',
+    'val' : true,
+  },
+])
+const toggleFilters = (index) => {
+  filters.value[index].val = !filters.value[index].val
+}
+
 </script>
 
 <template>
@@ -19,30 +44,20 @@ import checkIcon from '@/components/icons/IconCheck.vue'
       <div class="right">
         <div class="filters">
           filter by
-          <div class="filter__select">
+          <div class="filter__select" @click="showHideFiltersBox">
             <span>status</span>
             <arrowDownIcon />
           </div>
-          <div class="filters-box">
-            <div class="filter__group checked">
-              <div class="checkbox">
-                <checkIcon />
+          <div class="filters-box" v-if="showFilters">
+            <div v-for="(filter, index) in filters" :key="index">
+              <div class="filter__group" :class="filter.val ? 'checked' : ''">
+                <div class="checkbox" @click="toggleFilters(index)">
+                  <checkIcon v-if="filter.val" />
+                </div>
+                <label>{{ filter.name }}</label>
               </div>
-              <label for="draft">Draft</label>
-            </div>
-            <div class="filter__group">
-              <div class="checkbox">
-                <checkIcon />
-                
-              </div>
-              <label for="pending">Pending</label>
-            </div>
-            <div class="filter__group">
-              <div class="checkbox">
-                <checkIcon />
 
-              </div>
-              <label for="paid">Paid</label>
+              
             </div>
           </div>
         </div>
@@ -109,6 +124,7 @@ import checkIcon from '@/components/icons/IconCheck.vue'
   justify-content: space-between;
   align-items: center;
   margin-bottom: 50px;
+  position: relative;
 }
 .content__header .left p{
   margin-top: 10px;
@@ -123,7 +139,6 @@ import checkIcon from '@/components/icons/IconCheck.vue'
   line-height: 15px;
   letter-spacing: -.25px;
   font-weight: bold;
-  position: relative;
 }
 .content__header .right .filters .filter__select{
   display: inline-block;
@@ -133,8 +148,9 @@ import checkIcon from '@/components/icons/IconCheck.vue'
 }
 
 .content__header .right .filters .filters-box{
-  position: relative;
-  top: 10px;
+  position: absolute;
+  top: 50px;
+  right: 188px;
   width: 192px;
   height: 128px;
   background-color: var(--elements-clr);
@@ -143,6 +159,8 @@ import checkIcon from '@/components/icons/IconCheck.vue'
   flex-direction: column;
   justify-content: center;
   align-items: baseline;
+  z-index: 5;
+  box-shadow: 0px 0px 10px 5px var(--bg-clr);
 }
 .content__header .right .filters .filters-box .filter__group{
   display: flex;
