@@ -1,10 +1,13 @@
 <script setup>
+import { useInvoiceStore } from '@/stores/invoiceStore'
+import axios from "axios"
 import {ref, onMounted} from 'vue'
 import illustration from '@/components/icons/illustrationEmpty.vue'
 import plusIcon from '@/components/icons/IconPlus.vue'
 import arrowDownIcon from '@/components/icons/IconArrowDown.vue'
 import arrowRightIcon from '@/components/icons/IconArrowRight.vue'
 import checkIcon from '@/components/icons/IconCheck.vue'
+
 
 let showFilters = ref(false)
 const showHideFiltersBox = () => {
@@ -14,7 +17,7 @@ const showHideFiltersBox = () => {
 let filters = ref([
   {
     'name':'draft',
-     'val':false,
+    'val':false,
   },
   {
     'name':'pending',
@@ -22,13 +25,66 @@ let filters = ref([
   },
   {
     'name':'paid',
-    'val' : true,
+    'val' : false,
   },
 ])
-const toggleFilters = (index) => {
+// const toggleFilters = (index,filterName) => {
+//   filters.value[index].val = !filters.value[index].val
+  
+//   filterInvoicesByStatus(filterName)
+// }
+
+const toggleFilters = (index, filterName) => {
   filters.value[index].val = !filters.value[index].val
+  filterInvoices()
 }
 
+let invoices = ref()
+onMounted( async () => {
+  invoices.value = await useInvoiceStore().getInvoices()
+  filteredInvoices.value = invoices.value
+})
+
+let filteredInvoices = ref()
+// const filterInvoicesByStatus = (filterName) => {
+
+//   let activeFilters = []
+
+//   filters.value.forEach((filter) => {
+//     activeFilters.push(filter.val)
+//   })
+
+//   let allFalse = activeFilters.every(filter => filter === false)
+//   if(!allFalse){
+//     filteredInvoices.value = invoices.value.filter((invoice) => invoice.status === filterName)
+//   }
+  
+  
+
+//   // console.log(invoices.value);
+//   // if(filteredInvoices.value.length > 0 )
+//   // const activeFilters = filters.value.filter(filter => filter.val).map(filter => filter.name);
+//   // if (activeFilters.length === 0) {
+//   //   // If no filters are selected, display all invoices
+//   //   invoices.value = invoices.value;
+//   // } else {
+//   //   // Filter invoices based on selected filters
+//   //   invoices.value = invoices.value.filter(invoice => activeFilters.includes(invoice.status));
+//   // }
+// }
+
+const filterInvoices = () => {
+  // Get active filters
+  const activeFilters = filters.value.filter(filter => filter.val).map(filter => filter.name)
+  
+  // If no filters are selected, display all invoices
+  if (activeFilters.length === 0) {
+    filteredInvoices.value = invoices.value
+  } else {
+    // Filter invoices based on selected filters
+    filteredInvoices.value = invoices.value.filter(invoice => activeFilters.includes(invoice.status))
+  }
+}
 </script>
 
 <template>
@@ -38,7 +94,12 @@ const toggleFilters = (index) => {
 
       <div class="left">
         <h1>Invoices</h1>
-        <p>There are 7 total invoices</p>
+        <div v-if="invoices">
+          <p>There are {{ invoices.length }} total invoices</p>
+        </div>
+        <div class="no__invoices" v-else>
+          <p>No Invoices</p>
+        </div>
       </div>
 
       <div class="right">
@@ -51,7 +112,7 @@ const toggleFilters = (index) => {
           <div class="filters-box" v-if="showFilters">
             <div v-for="(filter, index) in filters" :key="index">
               <div class="filter__group" :class="filter.val ? 'checked' : ''">
-                <div class="checkbox" @click="toggleFilters(index)">
+                <div class="checkbox" @click="toggleFilters(index,filter.name)">
                   <checkIcon v-if="filter.val" />
                 </div>
                 <label>{{ filter.name }}</label>
@@ -71,43 +132,22 @@ const toggleFilters = (index) => {
 
     </div>
 
-    <div class="invoices">
-      <div class="invoice">
-        <span class="invoice__id"><span>#</span>RT3080</span>
-        <p class="payment__due">Due 2021-08-19</p>
-        <p class="client__name">Jensen Huang</p>
-        <h3 class="invoice__total">$1800.90</h3>
-        <div class="invoice__status paid-btn">
+    <div class="invoices" >
+
+      <!-- <div class="invoice" v-for="invoice in invoices" :key="invoice.id"> -->
+      <div class="invoice" v-for="invoice in filteredInvoices" :key="invoice.id">
+        <span class="invoice__id"><span>#</span>{{ invoice.id }}</span>
+        <p class="payment__due">{{ invoice.paymentDue }}</p>
+        <p class="client__name">{{ invoice.clientName }}</p>
+        <h3 class="invoice__total">${{ invoice.total }}</h3>
+        <div class="invoice__status" :class="invoice.status + '-btn'">
           <div class="layer">
-            <span></span>Paid
+            <span></span>{{ invoice.status }}
           </div>
         </div>
         <arrowRightIcon />
       </div>
-      <div class="invoice">
-        <span class="invoice__id"><span>#</span>RT3080</span>
-        <p class="payment__due">Due 2021-08-19</p>
-        <p class="client__name">Jensen Huang</p>
-        <h3 class="invoice__total">$1800.90</h3>
-        <div class="invoice__status pending-btn">
-          <div class="layer">
-            <span></span>Pending
-          </div>
-        </div>
-        <arrowRightIcon />
-      </div>
-      <div class="invoice">
-        <span class="invoice__id"><span>#</span>RT3080</span>
-        <p class="payment__due">Due 2021-08-19</p>
-        <p class="client__name">Jensen Huang</p>
-        <h3 class="invoice__total">$1800.90</h3>
-        <div class="invoice__status draft-btn">
-          <div class="layer">
-            <span></span>Draft
-          </div>
-        </div>
-        <arrowRightIcon />
-      </div>
+      
       
     </div>
 
@@ -117,7 +157,7 @@ const toggleFilters = (index) => {
 <style>
 .home__content{
   width: 60%;
-  margin: 50px auto 0 auto;
+  margin: 50px auto;
 }
 .content__header{
   display: flex;
