@@ -10,9 +10,10 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: "/view-invoice",
+      path: "/view-invoice/:id",
       name: "view-invoice",
       component: () => import("../views/ViewInvoice.vue"),
+      props: true,
     },
   ],
 });

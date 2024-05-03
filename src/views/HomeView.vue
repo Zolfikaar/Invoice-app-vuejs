@@ -28,11 +28,6 @@ let filters = ref([
     'val' : false,
   },
 ])
-// const toggleFilters = (index,filterName) => {
-//   filters.value[index].val = !filters.value[index].val
-  
-//   filterInvoicesByStatus(filterName)
-// }
 
 const toggleFilters = (index, filterName) => {
   filters.value[index].val = !filters.value[index].val
@@ -46,33 +41,6 @@ onMounted( async () => {
 })
 
 let filteredInvoices = ref()
-// const filterInvoicesByStatus = (filterName) => {
-
-//   let activeFilters = []
-
-//   filters.value.forEach((filter) => {
-//     activeFilters.push(filter.val)
-//   })
-
-//   let allFalse = activeFilters.every(filter => filter === false)
-//   if(!allFalse){
-//     filteredInvoices.value = invoices.value.filter((invoice) => invoice.status === filterName)
-//   }
-  
-  
-
-//   // console.log(invoices.value);
-//   // if(filteredInvoices.value.length > 0 )
-//   // const activeFilters = filters.value.filter(filter => filter.val).map(filter => filter.name);
-//   // if (activeFilters.length === 0) {
-//   //   // If no filters are selected, display all invoices
-//   //   invoices.value = invoices.value;
-//   // } else {
-//   //   // Filter invoices based on selected filters
-//   //   invoices.value = invoices.value.filter(invoice => activeFilters.includes(invoice.status));
-//   // }
-// }
-
 const filterInvoices = () => {
   // Get active filters
   const activeFilters = filters.value.filter(filter => filter.val).map(filter => filter.name)
@@ -132,23 +100,28 @@ const filterInvoices = () => {
 
     </div>
 
-    <div class="invoices" >
+    <div class="invoices" v-if="invoices">
 
-      <!-- <div class="invoice" v-for="invoice in invoices" :key="invoice.id"> -->
-      <div class="invoice" v-for="invoice in filteredInvoices" :key="invoice.id">
-        <span class="invoice__id"><span>#</span>{{ invoice.id }}</span>
-        <p class="payment__due">{{ invoice.paymentDue }}</p>
-        <p class="client__name">{{ invoice.clientName }}</p>
-        <h3 class="invoice__total">${{ invoice.total }}</h3>
-        <div class="invoice__status" :class="invoice.status + '-btn'">
-          <div class="layer">
-            <span></span>{{ invoice.status }}
+      <div v-for="invoice in filteredInvoices" :key="invoice.id" class="invoice">
+        <router-link :to="{path: 'view-invoice/' + invoice.id}" >
+          <span class="invoice__id"><span>#</span>{{ invoice.id }}</span>
+          <p class="payment__due">{{ invoice.paymentDue }}</p>
+          <p class="client__name">{{ invoice.clientName }}</p>
+          <h3 class="invoice__total">${{ invoice.total }}</h3>
+          <div class="invoice__status" :class="invoice.status + '-btn'">
+            <div class="layer">
+              <span></span>{{ invoice.status }}
+            </div>
           </div>
-        </div>
-        <arrowRightIcon />
+          <arrowRightIcon />
+        </router-link>
       </div>
       
       
+    </div>
+
+    <div class="no__invoices_content" v-else>
+      <illustration />
     </div>
 
   </main>
@@ -275,7 +248,7 @@ const filterInvoices = () => {
 /* ============================================================================ */
 
 .invoices .invoice:not(:first-child){margin-top: 20px;}
-.invoices .invoice{
+.invoices .invoice a{
   background-color: var(--elements-clr);
   width: 100%;
   height: 72px;
@@ -284,10 +257,13 @@ const filterInvoices = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  text-decoration: none;
+  color: unset;
 }
 .invoices .invoice:hover{
   cursor: pointer;
   border: 1px solid var(--primary-clr);
+  border-radius: 10px;
 }
 .invoices .invoice .invoice__id{
   font-size: 15px;
@@ -338,5 +314,9 @@ const filterInvoices = () => {
   height: 8px;
   border-radius: 50%;
 }
-
+.no__invoices_content{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>
