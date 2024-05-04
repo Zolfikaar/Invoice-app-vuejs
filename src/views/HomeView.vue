@@ -260,6 +260,7 @@ const filterInvoices = () => {
   text-decoration: none;
   color: unset;
 }
+.invoices .invoice{border: 1px solid transparent;}
 .invoices .invoice:hover{
   cursor: pointer;
   border: 1px solid var(--primary-clr);

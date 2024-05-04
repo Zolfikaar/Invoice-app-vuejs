@@ -3,7 +3,7 @@
   --primary-clr: #7C5DFA;
   --primary-light: #9277FF;
   --danger-clr: #EC5757;
-  --danger-hover: #ff9277;
+  --danger-light: #ff9277;
   --txt-clr:#0C0E16;
   --txt-gray: #888EB0;
   --txt-secondary:#7E88C3;
@@ -78,12 +78,52 @@ h4{
   color: var(--btn-draft);
 }
 
+.primary-btn,
+.delete-btn,
+.edit-btn{
+  height: 48px;
+  text-align: center;
+  line-height: 48px;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+.primary-btn{
+  width: 130px;
+  background-color: var(--primary-clr);
+  color: var(--txt-clr);
+}
+.primary-btn:hover{
+  background-color: var(--primary-light);
+}
+.delete-btn{
+  width: 90px;
+  background-color: var(--danger-clr);
+  color: var(--txt-clr);
+}
+.delete-btn:hover{
+  background-color: var(--danger-light);
+}
+.edit-btn{
+  width: 73px;
+  background-color: var(--gray-clr);
+  color: var(--txt-gray);
+}
+.edit-btn:hover{
+  background-color: var(--txt-secondary);
+  color: #373b53;
+
+}
+
+.invoice__content .invoice__header .left .invoice__status.paid-btn .layer span,
 .invoices .invoice .invoice__status.paid-btn .layer span{
   background-color: var(--btn-paid);
 }
+.invoice__content .invoice__header .left .invoice__status.draft-btn .layer span,
 .invoices .invoice .invoice__status.draft-btn .layer span{
   background-color: var(--btn-draft);
 }
+.invoice__content .invoice__header .left .invoice__status.pending-btn .layer span,
 .invoices .invoice .invoice__status.pending-btn .layer span{
   background-color: var(--btn-pending);
 }

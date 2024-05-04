@@ -33,5 +33,11 @@ export const useInvoiceStore = defineStore("invoice", {
 
       return this.invoices;
     },
+
+    getInvoice(invoiceId) {
+      return JSON.parse(localStorage.getItem("invoices")).filter(
+        (invoice) => invoice.id === invoiceId
+      );
+    },
   },
 });
