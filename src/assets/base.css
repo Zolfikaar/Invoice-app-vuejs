@@ -1,27 +1,43 @@
 @import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..600&display=swap');
+
 :root {
   --primary-clr: #7C5DFA;
   --primary-light: #9277FF;
   --danger-clr: #EC5757;
-  --danger-light: #ff9277;
+  --danger-light: #FF9277;
+
+  --btn-pending: #FF8F00;
+  --btn-paid: #33D69F;
+  --btn-draft: rgba(55, 59, 83, 0.05); 
+
+  --gray-clr: #DFE3FA;
+  --gray-hvr: #F9FAFE;
+  
+  --bg-clr:#F8F8FB;
+
+  --ele-dark-clr: #fff;
+  --ele-light-clr: #F9FAFE;
+  --ele-black-light: #373B53;
+  
   --txt-clr:#0C0E16;
   --txt-gray: #888EB0;
   --txt-secondary:#7E88C3;
-  --elements-clr: #fff;
-  --bg-clr:#F8F8FB;
-  --btn-draft: #373b53; 
-  --cancel-btn: #F9FAFE;
-  --btn-pending: #ff8f00;
-  --btn-paid: #33d69f;
 }
 .dark {
+  --gray-clr: #252945;
+  --gray-hvr: #FFF;
+  
   --bg-clr: #141625;
-  --elements-clr: #1E2139;
-  --txt-clr:#fff;
+  
+  --ele-dark-clr: #1E2139;
+  --ele-light-clr: #252945;
+  --ele-black-dark: #0C0E16;
+  
+  --txt-clr:#FFF;
   --txt-gray: #DFE3FA;
-  --txt-secondary: #DFE3FA;
-  --btn-draft: #DFE3FA;
-  --cancel-btn: #252945;
+  --txt-secondary:#DFE3FA;
+  
+  --btn-draft: rgb(223, 227, 250,0.05);
 }
 *,
 *::before,
