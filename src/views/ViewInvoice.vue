@@ -1,6 +1,7 @@
 <script setup>
 import {ref,onMounted} from 'vue'
 import { useInvoiceStore } from '@/stores/invoiceStore'
+import arrowLeft from '@/components/icons/IconArrowLeft.vue'
 
 const props = defineProps({
   id: {
@@ -16,6 +17,10 @@ onMounted( () => {
 </script>
 <template>
   <div class="invoice__content" v-if="invoice">
+    <div class="back_btn">
+      <arrowLeft />
+      <p>Go back</p>
+    </div>
     <div class="invoice__header">
       <div class="left">
         <p>Status</p>
@@ -79,7 +84,44 @@ onMounted( () => {
       </div>
 
       <div class="bottom">
-;lfvcs
+        <div class="items_table">
+
+          <div class="table_header">
+            <p>Item Name</p>
+            <p>QTY.</p>
+            <p>Price</p>
+            <p>Total</p>
+          </div>
+
+          <div class="table_body">
+            <div class="item_row" v-for="item in invoice.items">
+
+              <div class="name_and_qty_and_price">
+
+                <div class="name">
+                  <h4>{{ item.name }}</h4>
+                </div>
+
+                <div class="qty_and_price">
+                  <h4>{{ item.quantity }}</h4>
+                  <h4>{{ item.price }}</h4>
+                </div>
+
+              </div>
+
+              <div class="total">
+                <h4>{{ item.total }}</h4>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="table_footer">
+            <p>Amount Due</p>
+            <h2><span>$</span>{{ invoice.total }}</h2>
+          </div>
+
+        </div>
       </div>
 
     </div>
@@ -88,17 +130,34 @@ onMounted( () => {
 
 <style scoped>
 .invoice__content{
-  margin: 50px auto;
+  margin: 40px auto 50px auto;
   width: 60%;
   color: var(--txt-clr);
 }
+.back_btn{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80px;
+  height: 50px;
+  margin: 20px 0;
+}
+.back_btn:hover{
+  cursor: pointer;
+  color: var(--txt-gray);
+}
+.back_btn:hover{
+  color: var(--txt-secondary);
+
+}
+.back_btn svg{margin-bottom: 5px;}
 .invoice__content .invoice__header{
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 50px;
   height: 88px;
-  background-color: var(--elements-clr);
+  background-color: var(--ele-dark-clr);
   border-radius: 10px;
   padding: 0 30px;
 }
@@ -126,23 +185,23 @@ onMounted( () => {
   height: 8px;
   border-radius: 50%;
 }
-
-.invoice__content .invoice__header .left p{
-  margin-right: 20px;
-}
+.invoice__content .invoice__header .left p{margin-right: 20px;}
 .invoice__content .invoice__header .left,
 .invoice__content .invoice__header .right{
   display: flex;
   align-items: center;
 }
-.invoice__content .invoice__header .right .delete-btn{
-  margin: 0 10px;
-}
+.invoice__content .invoice__header .right .delete-btn{margin: 0 10px;}
 
 /* ============================================================================ */
 /* ================================= Content ================================== */
 /* ============================================================================ */
 
+.invoice__content .content{
+  border-radius: 10px;
+  padding: 50px;
+  background-color: var(--ele-dark-clr);
+}
 .invoice__content .content .top{
   display: flex;
   justify-content: space-between;
@@ -154,32 +213,75 @@ onMounted( () => {
   justify-content: space-between;
   margin-right: 100px;
 }
-.invoice__content .content .middle .details .dates .details__group:last-child{
-  margin-top: 30px;
-}
-.invoice__content .content .middle .details .bill_info .details__group:last-child{
-  margin-top: 10px;
-}
-.invoice__content .content .middle .details .details__group p{
-  color: var(--txt-secondary);
-}
+.invoice__content .content .middle .details .dates .details__group:last-child{margin-top: 30px;}
+.invoice__content .content .middle .details .bill_info .details__group:last-child{margin-top: 10px;}
+.invoice__content .content .middle .details .details__group p{color: var(--txt-secondary);}
 .invoice__content .content .middle .details .details__group h3{
   margin-top: 10px;
   color: var(--txt-clr);
 }
 .invoice__content .content .bottom{
   margin-top: 50px;
-  min-height: 264px;
-  background-color: var(--cancel-btn);
+  /* min-height: 264px; */
+  background-color: var(--ele-light-clr);
   border-radius: 10px;
   color: var(--txt-clr);
 }
 
+.invoice__content .content .bottom .items_table{
+  padding: 30px 0 100px 0;
+  position: relative;
+  min-height: 170px;
+}
+.invoice__content .content .bottom .table_header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--txt-gray);
+  padding: 0 30px;
+}
+.invoice__content .content .bottom .table_body{
+  padding: 0 30px;
+}
+.invoice__content .content .bottom .table_body .item_row{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+}
+.invoice__content .content .bottom .table_body .item_row .name_and_qty_and_price{
+  display: flex;
+  justify-content: space-between;
+  width: 69%;
+}
 
+.invoice__content .content .bottom .table_body .item_row .name_and_qty_and_price .qty_and_price{
+  display: flex;
+  justify-content: space-between;
+  width: 47%;
+}
 
-.invoice__content .content{
-  border-radius: 10px;
-  padding: 50px;
-  background-color: var(--elements-clr);
+.invoice__content .content .bottom .table_body .item_row .name_and_qty_and_price .name h4,
+.invoice__content .content .bottom .table_body .item_row .name_and_qty_and_price .qty_and_price h4{
+  color: var(--txt-gray);
+}
+.invoice__content .content .bottom .table_body .item_row .name_and_qty_and_price .total h4{color: var(--txt-clr);}
+
+.invoice__content .content .bottom .table_footer{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--ele-black-light);
+  height: 80px;
+  padding: 0 30px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  color: #FFF;
+}
+.invoice__content .content .bottom .table_footer h2 span{
+  margin-right: 10px;
 }
 </style>

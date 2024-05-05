@@ -51,7 +51,7 @@ onMounted( () => {
 .nav{
   height: 100vh;
   width: 103px;
-  background-color: var(--elements-clr);
+  background-color: #1E2139;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

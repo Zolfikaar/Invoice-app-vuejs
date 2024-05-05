@@ -162,11 +162,11 @@ const filterInvoices = () => {
 
 .content__header .right .filters .filters-box{
   position: absolute;
-  top: 50px;
+  top: 60px;
   right: 188px;
   width: 192px;
   height: 128px;
-  background-color: var(--elements-clr);
+  background-color: var(--ele-dark-clr);
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -249,7 +249,7 @@ const filterInvoices = () => {
 
 .invoices .invoice:not(:first-child){margin-top: 20px;}
 .invoices .invoice a{
-  background-color: var(--elements-clr);
+  background-color: var(--ele-dark-clr);
   width: 100%;
   height: 72px;
   border-radius: 10px;

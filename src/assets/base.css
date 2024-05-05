@@ -8,7 +8,7 @@
 
   --btn-pending: #FF8F00;
   --btn-paid: #33D69F;
-  --btn-draft: rgba(55, 59, 83, 0.05); 
+  --btn-draft: #373b53; 
 
   --gray-clr: #DFE3FA;
   --gray-hvr: #F9FAFE;
@@ -31,13 +31,13 @@
   
   --ele-dark-clr: #1E2139;
   --ele-light-clr: #252945;
-  --ele-black-dark: #0C0E16;
+  --ele-black-light: #0C0E16;
   
   --txt-clr:#FFF;
   --txt-gray: #DFE3FA;
   --txt-secondary:#DFE3FA;
   
-  --btn-draft: rgb(223, 227, 250,0.05);
+  --btn-draft: #dfe3fa;
 }
 *,
 *::before,
@@ -46,39 +46,48 @@
   margin: 0;
   font-weight: normal;
 }
+img, embed, object, video{
+  max-width: 100%;
+}
+html{font-size: 100%;}
 body {
   background-color: var(--bg-clr);
   min-height: 100vh;
-  line-height: 18px;
-  font-size: 13px;
-  letter-spacing: -0.1px;
+  font-size: 1em;
+  line-height: 1.385;
+  letter-spacing: -0.008em;
   font-weight: normal;
   font-family: "League Spartan", sans-serif;
   font-optical-sizing: auto;
 }
+body.variant{
+  font-size: 1em;
+  line-height: 1.154em;
+  letter-spacing: -0.019em;
+}
 h1{
   font-weight: bold;
-  font-size: 36px;
-  line-height: 33px;
-  letter-spacing: -1px;
+  font-size: 2.769em;
+  /* line-height: 2.538em; */
+  letter-spacing: -0.05em;
 }
 h2{
   font-weight: bold;
-  font-size: 24px;
-  line-height: 22px;
-  letter-spacing: -.75px;
+  font-size: 1.846em;
+  line-height: 1.692em;
+  letter-spacing: -0.058em;
 }
 h3{
   font-weight: bold;
-  font-size: 15px;
-  line-height: 24px;
-  letter-spacing: -.25px;
+  font-size: 1.154em;
+  line-height: 1.846em;
+  letter-spacing: -0.019em;
 }
 h4{
   font-weight: bold;
-  font-size: 15px;
-  line-height: 15px;
-  letter-spacing: -.25px;
+  font-size: 1.154em;
+  line-height: 1.154;
+  letter-spacing: -0.019em;
 }
 
 .paid-btn{
@@ -92,6 +101,9 @@ h4{
 .draft-btn{
   background-color: rgba(55, 59, 83, 0.05);
   color: var(--btn-draft);
+}
+.box.dark .draft-btn{
+  background-color: #373b53;
 }
 
 .primary-btn,
@@ -107,7 +119,7 @@ h4{
 .primary-btn{
   width: 130px;
   background-color: var(--primary-clr);
-  color: var(--txt-clr);
+  color: #FFF;
 }
 .primary-btn:hover{
   background-color: var(--primary-light);
@@ -115,7 +127,7 @@ h4{
 .delete-btn{
   width: 90px;
   background-color: var(--danger-clr);
-  color: var(--txt-clr);
+  color: #FFF;
 }
 .delete-btn:hover{
   background-color: var(--danger-light);
@@ -123,7 +135,7 @@ h4{
 .edit-btn{
   width: 73px;
   background-color: var(--gray-clr);
-  color: var(--txt-gray);
+  color: #7E88C3;
 }
 .edit-btn:hover{
   background-color: var(--txt-secondary);
