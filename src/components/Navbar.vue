@@ -49,6 +49,8 @@ onMounted( () => {
 
 <style>
 .nav{
+  position: relative;
+  z-index: 5;
   height: 100vh;
   width: 103px;
   background-color: #1E2139;

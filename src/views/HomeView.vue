@@ -53,9 +53,28 @@ const filterInvoices = () => {
     filteredInvoices.value = invoices.value.filter(invoice => activeFilters.includes(invoice.status))
   }
 }
+
+let toggleAddModal = ref(false)
+const onDelete = () => {
+  toggleAddModal.value = !toggleAddModal.value
+}
 </script>
 
 <template>
+
+  <!-- <div class="add_modal_overlay" v-if="toggleDeleteModal">
+
+    <div class="add_modal">
+      <h2>Confirm Deletion</h2>
+      <p>Are you sure you want to delete invoice #XM9141? This action cannot be undone.</p>
+      <div class="btns">
+        <div class="edit-btn" @click="toggleAddModal = !toggleAddModal">Cancel</div>
+        <div class="delete-btn" >Delete</div>
+      </div>
+    </div>
+
+  </div> -->
+  
   <main class="home__content">
 
     <div class="content__header">
@@ -90,7 +109,7 @@ const filterInvoices = () => {
             </div>
           </div>
         </div>
-        <div class="create__invoice__btn">
+        <div class="create__invoice__btn" >
           <span class="arrow__icon">
             <plusIcon />
           </span>

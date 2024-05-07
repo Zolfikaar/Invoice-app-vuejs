@@ -2,6 +2,7 @@
 import {ref,onMounted} from 'vue'
 import { useInvoiceStore } from '@/stores/invoiceStore'
 import arrowLeft from '@/components/icons/IconArrowLeft.vue'
+import EditModal from '@/components/EditModal.vue'
 
 const props = defineProps({
   id: {
@@ -14,13 +15,38 @@ let invoice = ref()
 onMounted( () => {
   invoice.value = useInvoiceStore().getInvoice(props.id)[0]
 })
+
+let toggleDeleteModal = ref(false)
+const onDelete = () => {
+  toggleDeleteModal.value = !toggleDeleteModal.value
+}
+
+let toggleEditModal = ref(false)
+const onEdit = () => {
+  toggleEditModal.value = !toggleEditModal.value
+}
 </script>
 <template>
+  <div class="delete_modal_overlay" v-if="toggleDeleteModal">
+
+    <div class="delete_modal">
+      <h2>Confirm Deletion</h2>
+      <p>Are you sure you want to delete invoice #{{ invoice.id }}? This action cannot be undone.</p>
+      <div class="btns">
+        <div class="edit-btn" @click="toggleDeleteModal = !toggleDeleteModal">Cancel</div>
+        <div class="delete-btn" >Delete</div>
+      </div>
+    </div>
+
+  </div>
+
+  <EditModal :editInvoice="invoice" :showEditModal="toggleEditModal" />
+
   <div class="invoice__content" v-if="invoice">
-    <div class="back_btn">
+    <router-link class="back_btn" to="/">
       <arrowLeft />
       <p>Go back</p>
-    </div>
+    </router-link>
     <div class="invoice__header">
       <div class="left">
         <p>Status</p>
@@ -32,8 +58,8 @@ onMounted( () => {
         </div>
       </div>
       <div class="right">
-        <div class="edit-btn">Edit</div>
-        <div class="delete-btn">Delete</div>
+        <div class="edit-btn" @click="onEdit">Edit</div>
+        <div class="delete-btn" @click="onDelete">Delete</div>
         <div class="primary-btn">Mark as Paid</div>
       </div>
     </div>
@@ -129,6 +155,47 @@ onMounted( () => {
 </template>
 
 <style scoped>
+/* ================================================================ */
+/* ================================================================ */
+/* ========================= Modals =============================== */
+/* ================================================================ */
+/* ================================================================ */
+/* ========================= Delete Modal =================================== */
+.delete_modal_overlay{
+  position: absolute;
+  z-index: 6;
+  background-color: rgba(0, 0, 0, .8);
+  width: 100%;
+  min-height: 100vh;
+}
+.delete_modal_overlay .delete_modal{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  z-index: 10;
+  width: 480px;
+  height: 250px;
+  background-color: var(--ele-dark-clr);
+  border-radius: 10px;
+  padding: 30px;
+}
+.delete_modal_overlay .delete_modal h2{color: var(--txt-clr);letter-spacing: -0.038em !important;}
+.delete_modal_overlay .delete_modal p{color: var(--txt-gray);margin: 20px 0;}
+.delete_modal_overlay .delete_modal .btns{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.delete_modal_overlay .delete_modal .btns .edit-btn{margin-right: 10px;}
+
+
+/* ================================================================ */
+/* ================================================================ */
+/* ============================ Header ============================ */
+/* ================================================================ */
+/* ================================================================ */
+
 .invoice__content{
   margin: 40px auto 50px auto;
   width: 60%;
@@ -193,9 +260,9 @@ onMounted( () => {
 }
 .invoice__content .invoice__header .right .delete-btn{margin: 0 10px;}
 
-/* ============================================================================ */
-/* ================================= Content ================================== */
-/* ============================================================================ */
+/* ======================================================================= */
+/* =============================== Content ================================ */
+/* ===================================== ================================= */
 
 .invoice__content .content{
   border-radius: 10px;
