@@ -1,9 +1,9 @@
 <script setup>
 import {ref, onMounted} from 'vue'
-const props = defineProps(['editInvoice'])
+const props = defineProps(['editInvoice','showEditModal'])
 
 let invoice = ref(props.editInvoice)
-onMounted(async () => {
+onMounted( () => {
   // invoice.value = await props.editInvoice
   // console.log(invoice.value);
 })
