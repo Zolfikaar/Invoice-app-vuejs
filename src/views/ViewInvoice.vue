@@ -1,15 +1,15 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useInvoiceStore } from '@/stores/invoiceStore'
+
 import arrowLeft from '@/components/icons/IconArrowLeft.vue'
-// import calendarIcon from '@/ocmponents/icons/IconCalendar.vue'
-// import arrowDownIcon from '@/components/icons/IconArrowDown.vue'
-// import deleteIcon from '@/components/icons/IconDelete.vue'
-// import plusIcon from '@/components/icons/IconPlus.vue'
 
+import StatusModal from '@/components/StatusModal.vue'
 import EditModal from '@/components/EditModal.vue'
-import deleteModal from '@/components/DeleteModal.vue'
+import DeleteModal from '@/components/DeleteModal.vue'
 
+const router = useRouter()
 const props = defineProps({
   id: {
     type: String,
@@ -18,27 +18,45 @@ const props = defineProps({
 })
 
 let invoice = ref()
+let invoices = JSON.parse(localStorage.getItem('invoices'))
+let currentInvoice = invoices.filter((item) => item.id == props.id)[0]
+
 onMounted(() => {
   invoice.value = useInvoiceStore().getInvoice(props.id)[0]
 })
 
-let showDeleteModal = ref(false)
+/* ================================  Delete Modal  ============================================== */
 
+let showDeleteModal = ref(false)
 const toggleDeleteModal = () => {
   showDeleteModal.value = !showDeleteModal.value
-  // console.log('toggleDeleteModal | Delete Modal should be visiable');
 
 }
 
 const confirmDelete = () => {
-  // Perform delete action here
-  // console.log('Invoice deleted:', invoice.value)
-  // const 
-
   toggleDeleteModal()
+  deleteInvoice()
+  // after Deleting and closeing the modal, a notification should appear now
+
+  // redirect to home page
+  router.push({ name: 'home' })
+}
+
+const deleteInvoice = () => {
+
+  // delete the current feedback with old data
+  let index = invoices.indexOf(currentInvoice)
+
+  if (index > -1) { // only splice array when item is found
+    invoices.splice(index, 1) // 2nd parameter means remove one item only
+  }
+
+  // Save the updated invoices array back to local storage
+  localStorage.setItem('invoices', JSON.stringify(invoices));
 
 }
 
+/* ================================  Edit Modal  ============================================== */
 
 let showEditModal = ref(false)
 const toggleEditModal = () => {
@@ -47,15 +65,25 @@ const toggleEditModal = () => {
 
 const confirmEdit = (editedInvoice) => {
   // Perform edit action here
-
   toggleEditModal()
 }
 
+
+/* ================================  Status Modal  ============================================== */
+
+let showStatusModal = ref(false)
+
+const toggleStatusModal = () => {
+  showStatusModal.value = !showStatusModal.value
+}
+
+const changeStatus = () => {
+  toggleStatusModal()
+  changeInvoiceStatus()
+  // after changing and closeing the modal, a notification should appear now
+}
+
 const changeInvoiceStatus = () => {
-
-  let invoices = JSON.parse(localStorage.getItem('invoices'))
-
-  let currentInvoice = invoices.filter((item) => item.id == props.id)[0]
 
   // Check if the invoice exists
   if (currentInvoice) {
@@ -68,7 +96,7 @@ const changeInvoiceStatus = () => {
     // update status value in v-dom for immediate effect
     invoice.value.status = 'paid'
   } else {
-    console.error('Invoice not found');
+    // console.error('Invoice not found');
   }
 
 }
@@ -76,10 +104,11 @@ const changeInvoiceStatus = () => {
 <template>
 
 
-  <deleteModal v-if="showDeleteModal" @onDelete="confirmDelete" @close="toggleDeleteModal" />
-
   <EditModal v-if="showEditModal" :invoice="invoice" @onEdit="confirmEdit" @closeEditModal="toggleEditModal" />
 
+  <DeleteModal v-if="showDeleteModal" :invoice="invoice" @onDelete="confirmDelete" @close="toggleDeleteModal" />
+
+  <StatusModal v-if="showStatusModal" :invoice="invoice" @onChange="changeStatus" @close="toggleStatusModal" />
 
 
   <div class="invoice__content" v-if="invoice">
@@ -101,7 +130,7 @@ const changeInvoiceStatus = () => {
         <!-- @click="toggleEditModal" -->
         <div class="edit-btn" @click="toggleEditModal">Edit</div>
         <div class="delete-btn" @click="toggleDeleteModal">Delete</div>
-        <div class="primary-btn" @click="changeInvoiceStatus">Mark as Paid</div>
+        <div class="primary-btn" @click="toggleStatusModal">Mark as Paid</div>
       </div>
     </div>
     <div class="content">
