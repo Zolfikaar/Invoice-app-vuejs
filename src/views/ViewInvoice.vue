@@ -50,6 +50,28 @@ const confirmEdit = (editedInvoice) => {
 
   toggleEditModal()
 }
+
+const changeInvoiceStatus = () => {
+
+  let invoices = JSON.parse(localStorage.getItem('invoices'))
+
+  let currentInvoice = invoices.filter((item) => item.id == props.id)[0]
+
+  // Check if the invoice exists
+  if (currentInvoice) {
+    // Update the status of the found invoice
+    currentInvoice.status = 'paid';
+
+    // Save the updated invoices array back to localStorage
+    localStorage.setItem('invoices', JSON.stringify(invoices));
+
+    // update status value in v-dom for immediate effect
+    invoice.value.status = 'paid'
+  } else {
+    console.error('Invoice not found');
+  }
+
+}
 </script>
 <template>
 
@@ -79,7 +101,7 @@ const confirmEdit = (editedInvoice) => {
         <!-- @click="toggleEditModal" -->
         <div class="edit-btn" @click="toggleEditModal">Edit</div>
         <div class="delete-btn" @click="toggleDeleteModal">Delete</div>
-        <div class="primary-btn">Mark as Paid</div>
+        <div class="primary-btn" @click="changeInvoiceStatus">Mark as Paid</div>
       </div>
     </div>
     <div class="content">
