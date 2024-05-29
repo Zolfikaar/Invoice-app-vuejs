@@ -8,37 +8,39 @@
 
   --btn-pending: #FF8F00;
   --btn-paid: #33D69F;
-  --btn-draft: #373b53; 
+  --btn-draft: #373b53;
 
   --gray-clr: #DFE3FA;
   --gray-hvr: #F9FAFE;
-  
-  --bg-clr:#F8F8FB;
+
+  --bg-clr: #F8F8FB;
 
   --ele-dark-clr: #fff;
   --ele-light-clr: #F9FAFE;
   --ele-black-light: #373B53;
-  
-  --txt-clr:#0C0E16;
+
+  --txt-clr: #0C0E16;
   --txt-gray: #888EB0;
-  --txt-secondary:#7E88C3;
+  --txt-secondary: #7E88C3;
 }
+
 .dark {
   --gray-clr: #252945;
   --gray-hvr: #FFF;
-  
+
   --bg-clr: #141625;
-  
+
   --ele-dark-clr: #1E2139;
   --ele-light-clr: #252945;
   --ele-black-light: #0C0E16;
-  
-  --txt-clr:#FFF;
+
+  --txt-clr: #FFF;
   --txt-gray: #DFE3FA;
-  --txt-secondary:#DFE3FA;
-  
+  --txt-secondary: #DFE3FA;
+
   --btn-draft: #dfe3fa;
 }
+
 *,
 *::before,
 *::after {
@@ -46,10 +48,18 @@
   margin: 0;
   font-weight: normal;
 }
-img, embed, object, video{
+
+img,
+embed,
+object,
+video {
   max-width: 100%;
 }
-html{font-size: 100%;}
+
+html {
+  font-size: 100%;
+}
+
 body {
   position: relative;
   background-color: var(--bg-clr);
@@ -61,58 +71,69 @@ body {
   font-family: "League Spartan", sans-serif;
   font-optical-sizing: auto;
 }
-body.variant{
+
+body.variant {
   font-size: 1em;
   line-height: 1.154em;
   letter-spacing: -0.019em;
 }
-h1{
+
+h1 {
   font-weight: bold;
   font-size: 2.769em;
   /* line-height: 2.538em; */
   letter-spacing: -0.05em;
 }
-h2{
+
+h2 {
   font-weight: bold;
   font-size: 1.846em;
   line-height: 1.692em;
   letter-spacing: -0.058em;
 }
-h3{
+
+h3 {
   font-weight: bold;
   font-size: 1.154em;
   line-height: 1.846em;
   letter-spacing: -0.019em;
 }
-h4{
+
+h4 {
   font-weight: bold;
   font-size: 1.154em;
   line-height: 1.154;
   letter-spacing: -0.019em;
 }
-a{
+
+a {
   text-decoration: unset;
   color: unset;
 }
-.paid-btn{
+
+.paid-btn {
   background-color: rgba(51, 214, 159, 0.05);
   color: var(--btn-paid);
 }
-.pending-btn{
+
+.pending-btn {
   background-color: rgba(255, 143, 0, 0.05);
   color: var(--btn-pending);
 }
-.draft-btn{
+
+.draft-btn {
   background-color: rgba(55, 59, 83, 0.05);
   color: var(--btn-draft);
 }
-.box.dark .draft-btn{
+
+.box.dark .draft-btn {
   background-color: #373b53;
 }
 
+.draft-btn,
 .primary-btn,
 .delete-btn,
-.edit-btn{
+.edit-btn {
   height: 48px;
   text-align: center;
   line-height: 48px;
@@ -120,42 +141,58 @@ a{
   cursor: pointer;
 }
 
-.primary-btn{
+.primary-btn {
   width: 130px;
   background-color: var(--primary-clr);
   color: #FFF;
 }
-.primary-btn:hover{
+
+.primary-btn:hover {
   background-color: var(--primary-light);
 }
-.delete-btn{
+
+.delete-btn {
   width: 90px;
   background-color: var(--danger-clr);
   color: #FFF;
 }
-.delete-btn:hover{
+
+.delete-btn:hover {
   background-color: var(--danger-light);
 }
-.edit-btn{
+
+.edit-btn {
   width: 73px;
-  background-color: var(--gray-clr);
+  background-color: #F9FAFE;
   color: #7E88C3;
 }
-.edit-btn:hover{
-  background-color: var(--txt-secondary);
-  color: #373b53;
 
+.edit-btn:hover {
+  background-color: var(--txt-secondary);
+  color: #F9FAFE;
+}
+
+.draft-btn {
+  width: 130px;
+  background-color: #373b53;
+  color: var(--txt-gray);
+}
+
+.draft-btn:hover {
+  opacity: .8;
 }
 
 .invoice__content .invoice__header .left .invoice__status.paid-btn .layer span,
-.invoices .invoice .invoice__status.paid-btn .layer span{
+.invoices .invoice .invoice__status.paid-btn .layer span {
   background-color: var(--btn-paid);
 }
+
 .invoice__content .invoice__header .left .invoice__status.draft-btn .layer span,
-.invoices .invoice .invoice__status.draft-btn .layer span{
+.invoices .invoice .invoice__status.draft-btn .layer span {
   background-color: var(--btn-draft);
 }
+
 .invoice__content .invoice__header .left .invoice__status.pending-btn .layer span,
-.invoices .invoice .invoice__status.pending-btn .layer span{
+.invoices .invoice .invoice__status.pending-btn .layer span {
   background-color: var(--btn-pending);
 }

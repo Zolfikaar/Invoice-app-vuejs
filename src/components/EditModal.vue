@@ -14,9 +14,13 @@ const props = defineProps({
 const emit = defineEmits(['onEdit', 'closeEditModal'])
 
 const editedInvoice = ref({ ...props.invoice })
+let paymentDueInDays = ref()
 onMounted(() => {
-  // invoice.value = await props.editInvoice
-  // console.log(invoice.value);
+  // Use a regular expression to match the last number
+  const createdDayes = props.invoice.createdAt.match(/(\d+)(?!.*\d)/)[0];
+  const dueDayes = props.invoice.paymentDue.match(/(\d+)(?!.*\d)/)[0];
+
+  paymentDueInDays.value = Number(dueDayes - createdDayes)
 })
 
 let showPaymentTerm = ref(false)
@@ -32,10 +36,19 @@ let toggleEditModal = ref()
 const closeModal = () => {
   emit('closeEditModal', toggleEditModal.value)
 }
+
+const changePaymentDue = (days) => {
+  days === 1 ? paymentDueInDays.value = 1
+    : days === 7 ? paymentDueInDays.value = 7
+      : days === 14 ? paymentDueInDays.value = 14
+        : days === 30 ? paymentDueInDays.value = 30 : 0
+
+  showPaymentTerm.value = !showPaymentTerm.value
+}
 </script>
 
 <template>
-  <div class="edit_modal_overlay">
+  <div class="edit_modal_overlay" @click.self="closeModal">
 
     <div class="edit_modal">
       <h2>Edit <span>#</span>{{ invoice.id }}</h2>
@@ -110,15 +123,15 @@ const closeModal = () => {
             <div class="form_group payment_due">
               <label for="paymentDue">Payment Terms</label>
               <div class="paymentDue" id="paymentDue" :value="invoice.paymentDue" @click="togglePaymentTerm">
-                <span>net 30 days</span>
+                <span>net {{ paymentDueInDays }} days</span>
                 <arrowDownIcon />
               </div>
 
               <div class="paymentTermBox" v-if="showPaymentTerm">
-                <span>Net 1 Day</span>
-                <span>Net 7 Days</span>
-                <span>Net 14 Days</span>
-                <span>Net 30 Days</span>
+                <span @click="changePaymentDue(1)">Net 1 Day</span>
+                <span @click="changePaymentDue(7)">Net 7 Days</span>
+                <span @click="changePaymentDue(14)">Net 14 Days</span>
+                <span @click="changePaymentDue(30)">Net 30 Days</span>
               </div>
             </div>
 
@@ -178,7 +191,6 @@ const closeModal = () => {
 
 
 <style scoped>
-/* ========================= Edit Modal =================================== */
 .edit_modal_overlay {
   position: absolute;
   right: 0;

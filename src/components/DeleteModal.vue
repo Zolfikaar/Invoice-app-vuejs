@@ -1,15 +1,20 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useInvoiceStore } from '@/stores/invoiceStore';
+// import { useInvoiceStore } from '@/stores/invoiceStore';
 
 const emit = defineEmits(['onDelete', 'close'])
 
-let invoice = ref()
-let toggleDeleteModal = ref()
-onMounted(() => {
-  // invoice.value = await props.editInvoice
-  // console.log(invoice.value);
+const props = defineProps({
+  invoice: {
+    type: Object,
+    required: true,
+  },
 })
+
+let invoice = ref({ ...props.invoice })
+let toggleDeleteModal = ref()
+
+onMounted(() => { })
 
 const onDelete = () => {
   emit('onDelete', invoice.value)
@@ -24,11 +29,11 @@ const closeModal = () => {
 </script>
 
 <template>
-  <div class="delete_modal_overlay">
+  <div class="delete_modal_overlay" @click.self="closeModal">
 
     <div class="delete_modal">
       <h2>Confirm Deletion</h2>
-      <p>Are you sure you want to delete invoice #? This action cannot be undone.</p>
+      <p>Are you sure you want to delete invoice #{{ invoice.id }}? This action cannot be undone.</p>
       <div class="btns">
         <div class="edit-btn" @click="closeModal">Cancel</div>
         <div class="delete-btn" @click="onDelete">Delete</div>
@@ -39,7 +44,6 @@ const closeModal = () => {
 </template>
 
 <style>
-/* ========================= Delete Modal =================================== */
 .delete_modal_overlay {
   position: absolute;
   z-index: 6;

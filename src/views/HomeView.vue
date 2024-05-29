@@ -62,14 +62,14 @@ const filterInvoices = () => {
 let showNewModal = ref(false)
 const toggleNewModal = () => {
   showNewModal.value = !showNewModal.value
-
+  showFilters.value = false
 }
 
 </script>
 
 <template>
 
-  <NewModal v-if="showNewModal" />
+  <NewModal v-if="showNewModal" @closeNewModal="toggleNewModal" />
 
   <main class="home__content">
 
@@ -137,6 +137,12 @@ const toggleNewModal = () => {
 
     <div class="no__invoices_content" v-else>
       <illustration />
+
+      <div>
+        <h2>There is nothing here</h2>
+        <p>Create an invoice by clicking the
+          New Invoice button and get started</p>
+      </div>
     </div>
 
   </main>
@@ -144,8 +150,10 @@ const toggleNewModal = () => {
 
 <style>
 .home__content {
+  position: relative;
   width: 60%;
   margin: 50px auto;
+  color: var(--txt-clr);
 }
 
 .content__header {
@@ -367,8 +375,19 @@ const toggleNewModal = () => {
 }
 
 .no__invoices_content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 240px;
+}
+
+.no__invoices_content div {
+  margin-top: 50px;
+}
+
+.no__invoices_content div p {
+  margin-top: 20px;
 }
 </style>
