@@ -7,12 +7,13 @@ import { useInvoiceStore } from '@/stores/invoiceStore'
 
 const emit = defineEmits(['onShowNewModal', 'closeNewModal'])
 
-let formattedDate = ref()
-const date = new Date();
-const options = { day: 'numeric', month: 'short', year: 'numeric' };
-formattedDate.value = new Intl.DateTimeFormat('en-GB', options).format(date);
+// let formattedDate = ref()
+// const date = new Date();
+// const options = { day: 'numeric', month: 'short', year: 'numeric' };
+// formattedDate.value = new Intl.DateTimeFormat('en-GB', options).format(date);
 
 let invoiceInfo = ref({
+  id: '',
   street: '',
   city: '',
   senderAddressPostCode: '',
@@ -24,27 +25,19 @@ let invoiceInfo = ref({
   clientAddressPostCode: '',
   clientAddressCountry: '',
   description: '',
-  createdAt: formattedDate,
+  createdAt: null,
   paymentDue: '',
-  paymentTerms: 0,
+  paymentTerms: 30,
   items: [],
   total: 0,
 })
 
 let invoices = ref()
-onMounted(async () => {
-  // console.log(invoiceInfo.value);
-  invoices.value = await useInvoiceStore().getInvoices()
-})
+onMounted(async () => invoices.value = await useInvoiceStore().getInvoices())
 
-const onAddNew = () => {
-  emit('onShowNewModal')
-}
 
 let toggleNewModal = ref()
-const closeModal = () => {
-  emit('closeNewModal', toggleNewModal.value)
-}
+const closeModal = () => emit('closeNewModal', toggleNewModal.value)
 
 let showPaymentTerm = ref(false)
 const togglePaymentTerm = () => {
@@ -55,6 +48,33 @@ let paymentTermValue = ref(30)
 const changePaymentTermValue = (val) => {
   paymentTermValue.value = val
   showPaymentTerm.value = false
+  invoiceInfo.value.paymentTerms = val
+
+  // from the date and paymentTerms value calculate the paymentDue value 
+
+  let paymentTermsVal = val;
+
+  let createdAtVal = invoiceInfo.value.createdAt
+
+  let createdAtDayVal = parseInt(createdAtVal.slice(8))
+  let createdAtMonthVal = parseInt(createdAtVal.slice(5, 7))
+  let createdAtYearVal = parseInt(createdAtVal.slice(0, 4))
+
+  let updatedPaymentDue = null
+  const numDays = (y, m) => new Date(y, m, 0).getDate();
+  let monthDaysCount = numDays(createdAtYearVal, createdAtMonthVal)
+
+  if (paymentTermsVal + createdAtDayVal > monthDaysCount) {
+    createdAtMonthVal++;
+    let updatedCreatedAtDayVal = (paymentTermsVal + createdAtDayVal) - monthDaysCount
+    updatedPaymentDue = `${createdAtYearVal}-${createdAtMonthVal}-${updatedCreatedAtDayVal}`;
+  } else if (paymentTermsVal + createdAtDayVal <= monthDaysCount) {
+    let updatedCreatedAtDayVal = paymentTermsVal + createdAtDayVal
+    updatedPaymentDue = `${createdAtYearVal}-${createdAtMonthVal}-${updatedCreatedAtDayVal}`;
+  }
+
+  invoiceInfo.value.paymentDue = updatedPaymentDue
+
 }
 
 
@@ -72,7 +92,7 @@ let errors = ref({
   description: false,
 })
 
-// Function to check if all values in the errors object are true
+// // Check if all values in the errors object are true
 let allEmpty = ref(false)
 function checkAllErrors() {
   // Get the values of the errors object
@@ -83,15 +103,11 @@ function checkAllErrors() {
 
   // Display an error message if all values are true
   if (allErrorsTrue) {
-    // console.error('All errors are true. An error message should appear.');
-    // alert('All errors are true. Please check the form.');
     allEmpty.value = true
   } else {
-
     allEmpty.value = false
   }
-  // console.log(allEmpty.value);
-  // console.log(errors);
+
 }
 
 function validateInvoiceInfo(invoiceInfo) {
@@ -108,19 +124,26 @@ function validateInvoiceInfo(invoiceInfo) {
       }
 
     }
-    // console.log(invoiceInfo.value[invoiceItem]);
   }
 
-
+  checkAllErrors()
 
 }
 
-let itemListName = ref()
-let itemListQty = ref()
-let itemListPrice = ref()
-let itemListTotal = itemListQty.value * itemListPrice.value || 0
+// let itemListName = ref()
+// let itemListQty = ref()
+// let itemListPrice = ref()
+// let itemListTotal = itemListQty.value * itemListPrice.value || 0
 
-let itemList = ref([])
+let itemList = ref([
+  {
+    name: '',
+    qty: 0,
+    price: 0,
+    total: 0,
+  }
+])
+
 let emptyList = ref(true)
 function checkItemList() {
 
@@ -128,7 +151,7 @@ function checkItemList() {
 
 const addListItem = () => {
   // function one: if the itemList is empty, the click event must show the table body for addind item info, 
-  console.log(itemList.value.length);
+  // console.log(itemList.value.length);
   if (itemList.value.length === 0) {
     //  show the empty feilds for adding item info
     emptyList.value = false
@@ -166,31 +189,26 @@ const addListItem = () => {
 
 const onDraft = () => {
 
-  // check if the generated id is not already exist for another invoice
-  let existIds = []
-
-  invoices.value.forEach((invoice) => {
-    existIds.push(invoice.id)
-  })
-
   let newId = generateID()
-
-  // if the new id is not already exited, then create the invoice with it's id
-  if (!existIds.includes(newId)) {
-    console.log(newId);
-    console.log(invoiceInfo.value);
-
-  }
-
 
 }
 
-// generate id (2 random upper case letters followed by 4 random numbers)
+// generate id, (return 2 random upper case letters followed by 4 random numbers)
+let invoicesIds = []; // This is your array of IDs
+let callCounter = 0;  // Counter to track the number of calls
+let lastResetTime = Date.now();  // Timestamp to track the last reset time
 function generateID() {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const digits = "0123456789";
   let id = '';
 
+  // load ids for checking
+  invoices.value.forEach((item) => {
+    invoicesIds.push(item.id)
+  })
+
+
+  // generate the new id
   for (let i = 0; i < 2; i++) {
     id += letters.charAt(Math.floor(Math.random() * letters.length));
   }
@@ -199,16 +217,54 @@ function generateID() {
     id += digits.charAt(Math.floor(Math.random() * digits.length));
   }
 
-  // 
-
   return id;
+
+}
+
+
+const generateIDWithRateLimit = () => {
+  const now = Date.now()
+
+  // Check if a minute has passed since the last reset
+  if (now - lastResetTime >= 60000) {
+    callCounter = 0; // Reset the counter
+    lastResetTime = now; // Update the last reset time
+  }
+
+  // Check if the call counter is below the limit
+  if (callCounter >= 5) {
+    throw new Error('Rate limit exceeded: Please try again later.');
+  }
+
+  callCounter++; // Increment the counter
+
+  const id = generateID();
+
+  // to prevent duplicate ids
+  if (invoicesIds.includes(id)) {
+    // Decrement the counter as the call didn't result in a new ID
+    callCounter--;
+    // controlled recursive, only when the new generated id value is existed in invoicesIds array, then we can call the function again.
+    return generateIDWithRateLimit()
+  } else {
+    return id;
+  }
+
 }
 
 const onSubmit = () => {
-  // check if form fields are not empty
-  let validationErrors = validateInvoiceInfo(invoiceInfo);
+
+  validateInvoiceInfo(invoiceInfo);
   checkAllErrors()
   checkItemList()
+
+  let id = generateIDWithRateLimit()
+
+  // console.log(invoiceInfo.value);
+
+
+  // NOW Almost all data are ready to be saved in local storage
+
 }
 </script>
 
@@ -288,7 +344,7 @@ const onSubmit = () => {
             <div class="form_group invoice_date">
               <label for="invoiceDate">Invoice Date</label>
               <div id="invoiceDate" class="invoiceDate">
-                <input type="date" id="start" :value="invoiceInfo.createdAt" />
+                <input type="date" id="start" v-model="invoiceInfo.createdAt" />
               </div>
             </div>
             <div class="form_group payment_due">
@@ -328,14 +384,26 @@ const onSubmit = () => {
               <span>Total</span>
             </div>
 
-            <div class="table_body" v-if="!emptyList">
-              <div class="item_info">
-                <input type="text" class="item_name" v-model="itemListName">
-                <input type="number" class="item_qty" v-model="itemListQty">
-                <input type="number" class="item_price" v-model="itemListPrice">
-                <div class="item_total">{{ itemListTotal }}</div>
+            <div class="table_body">
+
+
+
+              <div class="item_info" v-if="itemList.length === 0">
+                <input type="text" class="item_name" v-model="item.name">
+                <input type="number" class="item_qty" v-model="item.qty">
+                <input type="number" class="item_price" v-model="item.price">
+                <div class="item_total"> {{ itemListTotal }} </div>
                 <deleteIcon />
               </div>
+
+              <div class="item_info" v-else v-for="item in itemList">
+                <input type="text" class="item_name" v-model="item.name">
+                <input type="number" class="item_qty" v-model="item.qty">
+                <input type="number" class="item_price" v-model="item.price">
+                <div class="item_total"> {{ item.total }} </div>
+                <deleteIcon />
+              </div>
+
             </div>
 
             <div class="add_new_item_btn" @click="addListItem">
@@ -344,7 +412,7 @@ const onSubmit = () => {
 
             <div class="errors_box">
               <div v-if="allEmpty">- All fields must be added</div>
-              <div v-if="itemList.length !== 0">- An item must be added</div>
+              <div>- An item must be added</div>
             </div>
           </div>
 
