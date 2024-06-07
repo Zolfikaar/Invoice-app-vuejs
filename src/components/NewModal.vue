@@ -130,6 +130,7 @@ function validateInvoiceInfo(invoiceInfo) {
 
 }
 
+let itemListId = 0
 let itemListName = ref()
 let itemListQty = ref()
 let itemListPrice = ref()
@@ -143,8 +144,12 @@ function checkItemList() {
   // check if inputs are filled
   if (itemListName.value !== undefined && itemListQty.value !== undefined && itemListPrice.value !== undefined) {
 
+    // increment item id befor adding it to the array to avoid initial value
+    itemListId++
+
     // group the data from inputs
     let itemData = {
+      id: itemListId,
       name: itemListName.value,
       qty: itemListQty.value,
       price: itemListPrice.value,
@@ -156,6 +161,8 @@ function checkItemList() {
 
     // change error status
     emptyList.value = false
+
+    // the itemListId will not be reseted, because we need it for adding the next new element
 
     // reset inputs
     itemListName = ref()
@@ -180,7 +187,7 @@ const deleteListItem = (item) => {
   let currentItemIndex = invoiceInfo.value.items.indexOf(item)
   let currentItem = invoiceInfo.value.items[currentItemIndex]
   invoiceInfo.value.items.pop(currentItem)
-  checkItemList()
+  itemList.value.pop(currentItem)
 }
 
 const addListItem = () => {
@@ -441,7 +448,6 @@ const onSubmit = () => {
                 <input type="number" class="item_qty" v-model="itemListQty">
                 <input type="number" class="item_price" v-model="itemListPrice">
                 <div class="item_total"> {{ itemListQty * itemListPrice || itemListTotal }} </div>
-                <!-- <deleteIcon /> -->
               </div>
 
               <div class="item_info new_row" v-else="itemList.length > 0">
@@ -449,7 +455,6 @@ const onSubmit = () => {
                 <input type="number" class="item_qty" v-model="itemListQty">
                 <input type="number" class="item_price" v-model="itemListPrice">
                 <div class="item_total"> {{ itemListQty * itemListPrice || itemListTotal }} </div>
-                <!-- <deleteIcon /> -->
               </div>
 
 
