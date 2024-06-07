@@ -11,21 +11,25 @@ const emit = defineEmits(['onShowNewModal', 'closeNewModal'])
 
 let invoiceInfo = ref({
   id: '',
-  street: '',
-  city: '',
-  senderAddressPostCode: '',
-  senderAddressCountry: '',
-  clientName: '',
-  clientEmail: '',
-  clientAddressStreet: '',
-  clientAddressCity: '',
-  clientAddressPostCode: '',
-  clientAddressCountry: '',
-  description: '',
-  status: '',
   createdAt: null,
   paymentDue: '',
+  description: '',
   paymentTerms: 30,
+  clientName: '',
+  clientEmail: '',
+  status: '',
+  senderAddress: {
+    street: '',
+    city: '',
+    postCode: '',
+    country: '',
+  },
+  clientAddress: {
+    street: '',
+    city: '',
+    postCode: '',
+    country: '',
+  },
   items: [],
   total: 0,
 })
@@ -173,7 +177,7 @@ function checkItemList() {
     let itemData = {
       id: itemListId,
       name: itemListName.value,
-      qty: itemListQty.value,
+      quantity: itemListQty.value,
       price: itemListPrice.value,
       total: itemListQty.value * itemListPrice.value,
     }
@@ -290,7 +294,7 @@ const onSubmit = () => {
 
   validateInvoiceInfo(invoiceInfo);
   checkAllErrors()
-  checkItemList()
+  // checkItemList()
 
   let newId = generateIDWithRateLimit()
 
@@ -332,20 +336,20 @@ const onSubmit = () => {
           <div class="form_group st_address" :class="errors.street ? 'is_empty' : ''">
             <label for="st_address">Street Address <span class="error_msg" v-if="errors.street">Can't be
                 empty</span></label>
-            <input type="text" id="st_address" v-model="invoiceInfo.street">
+            <input type="text" id="st_address" v-model="invoiceInfo.senderAddress.street">
           </div>
           <div class="other_info">
             <div class="form_group city" :class="errors.city ? 'is_empty' : ''">
               <label for="city">City</label>
-              <input type="text" id="city" v-model="invoiceInfo.city">
+              <input type="text" id="city" v-model="invoiceInfo.senderAddress.city">
             </div>
             <div class="form_group postCode" :class="errors.senderAddressPostCode ? 'is_empty' : ''">
               <label for="postCode">Post Code </label>
-              <input type="text" id="postCode" v-model="invoiceInfo.senderAddressPostCode">
+              <input type="text" id="postCode" v-model="invoiceInfo.senderAddress.postCode">
             </div>
             <div class="form_group country" :class="errors.senderAddressCountry ? 'is_empty' : ''">
               <label for="country">Country </label>
-              <input type="text" id="country" v-model="invoiceInfo.senderAddressCountry">
+              <input type="text" id="country" v-model="invoiceInfo.senderAddress.country">
             </div>
           </div>
         </div>
@@ -370,22 +374,22 @@ const onSubmit = () => {
               <label for="streetAddress">Street Address <span class="error_msg" v-if="errors.clientAddressStreet">Can't
                   be
                   empty</span></label>
-              <input type="text" id="streetAddress" v-model="invoiceInfo.clientAddressStreet">
+              <input type="text" id="streetAddress" v-model="invoiceInfo.clientAddress.street">
             </div>
           </div>
 
           <div class="other_info">
             <div class="form_group city" :class="errors.clientAddressCity ? 'is_empty' : ''">
               <label for="city">City</label>
-              <input type="text" id="city" v-model="invoiceInfo.clientAddressCity">
+              <input type="text" id="city" v-model="invoiceInfo.clientAddress.city">
             </div>
             <div class="form_group postCode" :class="errors.clientAddressPostCode ? 'is_empty' : ''">
               <label for="postCode">Post Code </label>
-              <input type="text" id="postCode" v-model="invoiceInfo.clientAddressPostCode">
+              <input type="text" id="postCode" v-model="invoiceInfo.clientAddress.postCode">
             </div>
             <div class="form_group country" :class="errors.clientAddressCountry ? 'is_empty' : ''">
               <label for="country">Country </label>
-              <input type="text" id="country" v-model="invoiceInfo.clientAddressCountry">
+              <input type="text" id="country" v-model="invoiceInfo.clientAddress.country">
             </div>
           </div>
 
