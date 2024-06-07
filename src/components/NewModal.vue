@@ -93,7 +93,7 @@ let errors = ref({
 })
 
 // // Check if all values in the errors object are true
-let allEmpty = ref(false)
+let allEmpty = ref(true)
 function checkAllErrors() {
   // Get the values of the errors object
   const errorValues = Object.values(errors.value);
@@ -130,59 +130,101 @@ function validateInvoiceInfo(invoiceInfo) {
 
 }
 
-// let itemListName = ref()
-// let itemListQty = ref()
-// let itemListPrice = ref()
-// let itemListTotal = itemListQty.value * itemListPrice.value || 0
+let itemListName = ref()
+let itemListQty = ref()
+let itemListPrice = ref()
+let itemListTotal = ref(0)
 
-let itemList = ref([
-  {
-    name: '',
-    qty: 0,
-    price: 0,
-    total: 0,
-  }
-])
+let itemList = ref([])
 
 let emptyList = ref(true)
 function checkItemList() {
 
+  // check if inputs are filled
+  if (itemListName.value !== undefined && itemListQty.value !== undefined && itemListPrice.value !== undefined) {
+
+    // group the data from inputs
+    let itemData = {
+      name: itemListName.value,
+      qty: itemListQty.value,
+      price: itemListPrice.value,
+      total: itemListQty.value * itemListPrice.value,
+    }
+
+    // push item data to itemList array
+    itemList.value.push(itemData)
+
+    // change error status
+    emptyList.value = false
+
+    // reset inputs
+    itemListName = ref()
+    itemListQty = ref()
+    itemListPrice = ref()
+    itemListTotal = ref(0)
+
+
+    return itemData
+
+  }
+
+}
+
+const updateItemList = (item) => {
+  let oldItemIndex = invoiceInfo.value.items.indexOf(item)
+  invoiceInfo.value.items[oldItemIndex].total = item.qty * item.price
+}
+
+const deleteListItem = (item) => {
+  // this function need to use watch for updating list content after deleting the item
+  let currentItemIndex = invoiceInfo.value.items.indexOf(item)
+  let currentItem = invoiceInfo.value.items[currentItemIndex]
+  invoiceInfo.value.items.pop(currentItem)
+  checkItemList()
 }
 
 const addListItem = () => {
+  let listitems = checkItemList()
+  if (listitems !== undefined) {
+    invoiceInfo.value.items.push(listitems)
+  }
+
+  console.log(invoiceInfo.value);
+
+
   // function one: if the itemList is empty, the click event must show the table body for addind item info, 
   // console.log(itemList.value.length);
-  if (itemList.value.length === 0) {
-    //  show the empty feilds for adding item info
-    emptyList.value = false
+  // if (itemList.value.length === 0) {
+  //  show the empty feilds for adding item info
+  // emptyList.value = false
 
-    let itemInfo = {
-      'name': itemListName.value,
-      'qty': itemListQty.value,
-      'price': itemListPrice.value,
-      'total': itemListPrice.value * itemListQty.value
-    }
+  // let itemInfo = {
+  //   'name': itemListName.value,
+  //   'qty': itemListQty.value,
+  //   'price': itemListPrice.value,
+  //   'total': itemListPrice.value * itemListQty.value
+  // }
 
-    itemList.value.push(itemInfo)
+  // itemList.value.push(itemInfo)
 
-    // 
+  // 
 
-    // console.log(itemListName.value);
-  }
+  // console.log(itemListName.value);
+  // }
 
-  if (itemList.value.length !== 0) {
-    // console.log('there is an item in the list');
-    let itemInfo = {
-      'name': itemListName.value,
-      'qty': itemListQty.value,
-      'price': itemListPrice.value,
-      'total': itemListPrice.value * itemListQty.value
-    }
+  // if (itemList.value.length !== 0) {
+  //   // console.log('there is an item in the list');
+  //   let itemInfo = {
+  //     'name': itemListName.value,
+  //     'qty': itemListQty.value,
+  //     'price': itemListPrice.value,
+  //     'total': itemListPrice.value * itemListQty.value
+  //   }
 
-    itemList.value.push(itemInfo)
+  //   itemList.value.push(itemInfo)
 
-    console.log(itemList.value);
-  }
+  //   console.log(itemList.value);
+  // }
 
   // function one: if the itemList is not empty, the click event must add the info that been added and then show new empty feild for addind new item
 }
@@ -386,23 +428,31 @@ const onSubmit = () => {
 
             <div class="table_body">
 
-
-
-              <div class="item_info" v-if="itemList.length === 0">
+              <div class="item_info" v-for="item in itemList">
                 <input type="text" class="item_name" v-model="item.name">
-                <input type="number" class="item_qty" v-model="item.qty">
-                <input type="number" class="item_price" v-model="item.price">
-                <div class="item_total"> {{ itemListTotal }} </div>
-                <deleteIcon />
-              </div>
-
-              <div class="item_info" v-else v-for="item in itemList">
-                <input type="text" class="item_name" v-model="item.name">
-                <input type="number" class="item_qty" v-model="item.qty">
-                <input type="number" class="item_price" v-model="item.price">
+                <input type="number" class="item_qty" v-model="item.qty" @input="updateItemList(item)">
+                <input type="number" class="item_price" v-model="item.price" @input="updateItemList(item)">
                 <div class="item_total"> {{ item.total }} </div>
-                <deleteIcon />
+                <deleteIcon @click="deleteListItem(item)" />
               </div>
+
+              <div class="item_info new_row" v-if="itemList.length === 0">
+                <input type="text" class="item_name" v-model="itemListName">
+                <input type="number" class="item_qty" v-model="itemListQty">
+                <input type="number" class="item_price" v-model="itemListPrice">
+                <div class="item_total"> {{ itemListQty * itemListPrice || itemListTotal }} </div>
+                <!-- <deleteIcon /> -->
+              </div>
+
+              <div class="item_info new_row" v-else="itemList.length > 0">
+                <input type="text" class="item_name" v-model="itemListName">
+                <input type="number" class="item_qty" v-model="itemListQty">
+                <input type="number" class="item_price" v-model="itemListPrice">
+                <div class="item_total"> {{ itemListQty * itemListPrice || itemListTotal }} </div>
+                <!-- <deleteIcon /> -->
+              </div>
+
+
 
             </div>
 
@@ -412,7 +462,7 @@ const onSubmit = () => {
 
             <div class="errors_box">
               <div v-if="allEmpty">- All fields must be added</div>
-              <div>- An item must be added</div>
+              <div v-if="emptyList">- An item must be added</div>
             </div>
           </div>
 
@@ -666,7 +716,8 @@ const onSubmit = () => {
 .new_modal_content_box .bill_to_group .main_info .form_group.is_empty label .error_msg,
 .new_modal_content_box .bill_to_group .form_group.is_empty label .error_msg,
 .new_modal_content_box .bill_from_group .other_info .form_group.is_empty label .error_msg,
-.new_modal_content_box .bill_from_group .form_group.is_empty label .error_msg {
+.new_modal_content_box .bill_from_group .form_group.is_empty label .error_msg,
+.new_modal_content_box .bill_to_group .form_group.desc.is_empty label .error_msg {
   float: right;
 }
 
@@ -738,6 +789,10 @@ const onSubmit = () => {
   margin: 20px 0;
 }
 
+.new_modal_content_box .invoice_items .item_table .table_body .item_info.new_row {
+  margin-right: 55px
+}
+
 .new_modal_content_box .invoice_items .item_table .table_body .item_info input:focus {
   /* border: 1px solid var(--primary-clr); */
   outline: 1px solid var(--primary-clr);
@@ -774,11 +829,6 @@ const onSubmit = () => {
   width: 100px;
   text-align: center;
 }
-
-/* .new_modal_content_box .invoice_items .item_table .table_body .item_info .item_qty input[type=number],
-.new_modal_content_box .invoice_items .item_table .table_body .item_info .item_price input[type=number] {
-  -moz-appearance: textfield;
-} */
 
 .new_modal_content_box .invoice_items .item_table .table_body .item_info .item_price input::-webkit-outer-spin-button,
 .new_modal_content_box .invoice_items .item_table .table_body .item_info .item_price input::-webkit-inner-spin-button,
