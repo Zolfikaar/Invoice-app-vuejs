@@ -130,7 +130,7 @@ const changeInvoiceStatus = () => {
         <!-- @click="toggleEditModal" -->
         <div class="edit-btn" @click="toggleEditModal">Edit</div>
         <div class="delete-btn" @click="toggleDeleteModal">Delete</div>
-        <div class="primary-btn" @click="toggleStatusModal">Mark as Paid</div>
+        <div class="primary-btn" @click="toggleStatusModal" v-if="invoice.status === 'pending'">Mark as Paid</div>
       </div>
     </div>
     <div class="content">

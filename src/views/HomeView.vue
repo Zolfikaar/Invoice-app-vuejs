@@ -9,6 +9,8 @@ import arrowRightIcon from '@/components/icons/IconArrowRight.vue'
 import checkIcon from '@/components/icons/IconCheck.vue'
 import NewModal from '@/components/NewModal.vue'
 
+const emit = defineEmits(['invoice-updated'])
+
 let showFilters = ref(false)
 const showHideFiltersBox = () => {
   showFilters.value = !showFilters.value
@@ -54,7 +56,10 @@ const filterInvoices = () => {
   }
 }
 
-
+const rerenderInvoices = async () => {
+  invoices.value = await useInvoiceStore().getInvoices()
+  filteredInvoices.value = invoices.value
+}
 
 /* ===================================================== */
 /* ============= Create New Invoice Modal ============== */
@@ -115,7 +120,7 @@ const toggleNewModal = () => {
 
     </div>
 
-    <div class="invoices" v-if="invoices">
+    <div class="invoices" v-if="invoices" @invoice-updated="rerenderInvoices">
 
       <div v-for="invoice in filteredInvoices" :key="invoice.id" class="invoice">
         <router-link :to="{ path: 'view-invoice/' + invoice.id }">

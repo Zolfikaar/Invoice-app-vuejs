@@ -1,16 +1,13 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router'
 import arrowDownIcon from '@/components/icons/IconArrowDown.vue'
 import calendarIcon from '@/components/icons/IconCalendar.vue'
 import deleteIcon from '@/components/icons/IconDelete.vue'
 import { useInvoiceStore } from '@/stores/invoiceStore'
 
+const router = useRouter()
 const emit = defineEmits(['onShowNewModal', 'closeNewModal'])
-
-// let formattedDate = ref()
-// const date = new Date();
-// const options = { day: 'numeric', month: 'short', year: 'numeric' };
-// formattedDate.value = new Intl.DateTimeFormat('en-GB', options).format(date);
 
 let invoiceInfo = ref({
   id: '',
@@ -25,6 +22,7 @@ let invoiceInfo = ref({
   clientAddressPostCode: '',
   clientAddressCountry: '',
   description: '',
+  status: '',
   createdAt: null,
   paymentDue: '',
   paymentTerms: 30,
@@ -55,6 +53,30 @@ const changePaymentTermValue = (val) => {
   let paymentTermsVal = val;
 
   let createdAtVal = invoiceInfo.value.createdAt
+
+  if (createdAtVal == null) {
+
+    // Create a date object for the current date
+    let currentDate = new Date();
+
+    // Function to pad single digit months and days with a leading zero
+    function pad(number) {
+      return number < 10 ? '0' + number : number;
+    }
+
+    // Extract the year, month, and day from the date object
+    let year = currentDate.getFullYear();
+    let month = pad(currentDate.getMonth() + 1); // Add 1 to the month since it is zero-indexed
+    let day = pad(currentDate.getDate());
+
+    // Format the date
+    let formatted_date = `${year}-${month}-${day}`;
+
+    createdAtVal = formatted_date
+
+    invoiceInfo.value.createdAt = createdAtVal
+  }
+
 
   let createdAtDayVal = parseInt(createdAtVal.slice(8))
   let createdAtMonthVal = parseInt(createdAtVal.slice(5, 7))
@@ -195,12 +217,13 @@ const addListItem = () => {
     invoiceInfo.value.items.push(listitems)
   }
 
-
 }
 
 const onDraft = () => {
 
   let newId = generateID()
+  // invoiceInfo.value.status = 'draft'
+
 
 }
 
@@ -269,13 +292,28 @@ const onSubmit = () => {
   checkAllErrors()
   checkItemList()
 
-  let id = generateIDWithRateLimit()
+  let newId = generateIDWithRateLimit()
 
-  // console.log(invoiceInfo.value);
+  invoiceInfo.value.id = newId
+
+  // invoice total from item totals
+  let invoiceTotal = 0
+  invoiceInfo.value.items.forEach((itemTotal) => invoiceTotal += itemTotal.total)
+
+  invoiceInfo.value.total = invoiceTotal
+  invoiceInfo.value.status = 'pending'
 
 
-  // NOW Almost all data are ready to be saved in local storage
+  // NOW all data are ready to be saved in local storage
 
+  let updatedInvoices = JSON.parse(localStorage.getItem('invoices'))
+  updatedInvoices.push(invoiceInfo.value)
+  localStorage.setItem('invoices', JSON.stringify(updatedInvoices))
+
+  // Emit event to notify invoice update
+  emit('invoice-updated');
+
+  closeModal()
 }
 </script>
 
@@ -355,7 +393,8 @@ const onSubmit = () => {
             <div class="form_group invoice_date">
               <label for="invoiceDate">Invoice Date</label>
               <div id="invoiceDate" class="invoiceDate">
-                <input type="date" id="start" v-model="invoiceInfo.createdAt" />
+                <input type="date" id="start" v-model="invoiceInfo.createdAt"
+                  v-if="invoiceInfo.createdAt !== null ? invoiceInfo.createdAt : 'mm/dd/yyyy'" />
               </div>
             </div>
             <div class="form_group payment_due">
