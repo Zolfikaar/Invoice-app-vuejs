@@ -183,7 +183,6 @@ const updateItemList = (item) => {
 }
 
 const deleteListItem = (item) => {
-  // this function need to use watch for updating list content after deleting the item
   let currentItemIndex = invoiceInfo.value.items.indexOf(item)
   let currentItem = invoiceInfo.value.items[currentItemIndex]
   invoiceInfo.value.items.pop(currentItem)
@@ -196,44 +195,7 @@ const addListItem = () => {
     invoiceInfo.value.items.push(listitems)
   }
 
-  console.log(invoiceInfo.value);
 
-
-  // function one: if the itemList is empty, the click event must show the table body for addind item info, 
-  // console.log(itemList.value.length);
-  // if (itemList.value.length === 0) {
-  //  show the empty feilds for adding item info
-  // emptyList.value = false
-
-  // let itemInfo = {
-  //   'name': itemListName.value,
-  //   'qty': itemListQty.value,
-  //   'price': itemListPrice.value,
-  //   'total': itemListPrice.value * itemListQty.value
-  // }
-
-  // itemList.value.push(itemInfo)
-
-  // 
-
-  // console.log(itemListName.value);
-  // }
-
-  // if (itemList.value.length !== 0) {
-  //   // console.log('there is an item in the list');
-  //   let itemInfo = {
-  //     'name': itemListName.value,
-  //     'qty': itemListQty.value,
-  //     'price': itemListPrice.value,
-  //     'total': itemListPrice.value * itemListQty.value
-  //   }
-
-  //   itemList.value.push(itemInfo)
-
-  //   console.log(itemList.value);
-  // }
-
-  // function one: if the itemList is not empty, the click event must add the info that been added and then show new empty feild for addind new item
 }
 
 const onDraft = () => {
@@ -462,7 +424,7 @@ const onSubmit = () => {
             </div>
 
             <div class="add_new_item_btn" @click="addListItem">
-              <plusIcon /> Add New Item
+              <plusIcon /> Add New Item / Update Item
             </div>
 
             <div class="errors_box">
