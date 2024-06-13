@@ -14,6 +14,31 @@ const props = defineProps({
 const emit = defineEmits(['onEdit', 'closeEditModal'])
 
 const editedInvoice = ref({ ...props.invoice })
+let invoiceInfo = ref({
+  id: editedInvoice.value.id,
+  createdAt: editedInvoice.value.createdAt,
+  paymentDue: editedInvoice.value.paymentDue,
+  description: editedInvoice.value.description,
+  paymentTerms: editedInvoice.value.paymentTerms,
+  clientName: editedInvoice.value.clientName,
+  clientEmail: editedInvoice.value.clientEmail,
+  status: editedInvoice.value.status,
+  senderAddress: {
+    street: editedInvoice.value.senderAddress.street,
+    city: editedInvoice.value.senderAddress.city,
+    postCode: editedInvoice.value.senderAddress.postCode,
+    country: editedInvoice.value.senderAddress.country,
+  },
+  clientAddress: {
+    street: editedInvoice.value.clientAddress.street,
+    city: editedInvoice.value.clientAddress.city,
+    postCode: editedInvoice.value.clientAddress.postCode,
+    country: editedInvoice.value.clientAddress.country,
+  },
+  items: editedInvoice.value.items,
+  total: editedInvoice.value.total,
+})
+
 let paymentDueInDays = ref()
 onMounted(() => {
   // Use a regular expression to match the last number
@@ -24,11 +49,11 @@ onMounted(() => {
 })
 
 let showPaymentTerm = ref(false)
-const togglePaymentTerm = () => {
-  showPaymentTerm.value = !showPaymentTerm.value
-}
+const togglePaymentTerm = () => showPaymentTerm.value = !showPaymentTerm.value
 
 const onEdit = () => {
+
+  console.log(invoiceInfo.value);
   emit('onEdit')
 }
 
@@ -59,20 +84,20 @@ const changePaymentDue = (days) => {
 
           <div class="form_group st_address">
             <label for="st_address">Street Address</label>
-            <input type="text" id="st_address" :value="invoice.senderAddress.street">
+            <input type="text" id="st_address" v-model="invoiceInfo.senderAddress.street">
           </div>
           <div class="other_info">
             <div class="form_group city">
               <label for="city">City</label>
-              <input type="text" id="city" :value="invoice.senderAddress.city">
+              <input type="text" id="city" v-model="invoiceInfo.senderAddress.city">
             </div>
             <div class="form_group postCode">
               <label for="postCode">Post Code</label>
-              <input type="text" id="postCode" :value="invoice.senderAddress.postCode">
+              <input type="text" id="postCode" v-model="invoiceInfo.senderAddress.postCode">
             </div>
             <div class="form_group country">
               <label for="country">Country</label>
-              <input type="text" id="country" :value="invoice.senderAddress.country">
+              <input type="text" id="country" v-model="invoiceInfo.senderAddress.country">
             </div>
           </div>
         </div>
@@ -83,32 +108,32 @@ const changePaymentDue = (days) => {
 
             <div class="form_group clientName">
               <label for="clientName">Client Name</label>
-              <input type="text" id="clientName" :value="invoice.clientName">
+              <input type="text" id="clientName" v-model="invoiceInfo.clientName">
             </div>
 
             <div class="form_group clientEmail">
               <label for="clientEmail">Client Email</label>
-              <input type="text" id="clientEmail" :value="invoice.clientEmail">
+              <input type="text" id="clientEmail" v-model="invoiceInfo.clientEmail">
             </div>
 
             <div class="form_group streetAddress">
               <label for="streetAddress">Street Address</label>
-              <input type="text" id="streetAddress" :value="invoice.clientAddress.street">
+              <input type="text" id="streetAddress" v-model="invoiceInfo.clientAddress.street">
             </div>
           </div>
 
           <div class="other_info">
             <div class="form_group city">
               <label for="city">City</label>
-              <input type="text" id="city" :value="invoice.clientAddress.city">
+              <input type="text" id="city" v-model="invoiceInfo.clientAddress.city">
             </div>
             <div class="form_group postCode">
               <label for="postCode">Post Code</label>
-              <input type="text" id="postCode" :value="invoice.clientAddress.postCode">
+              <input type="text" id="postCode" v-model="invoiceInfo.clientAddress.postCode">
             </div>
             <div class="form_group country">
               <label for="country">Country</label>
-              <input type="text" id="country" :value="invoice.clientAddress.country">
+              <input type="text" id="country" v-model="invoiceInfo.clientAddress.country">
             </div>
           </div>
 
@@ -116,13 +141,13 @@ const changePaymentDue = (days) => {
             <div class="form_group invoice_date">
               <label for="invoiceDate">Invoice Date</label>
               <div id="invoiceDate" class="invoiceDate">
-                {{ invoice.createdAt }}
+                {{ invoiceInfo.createdAt }}
                 <calendarIcon />
               </div>
             </div>
             <div class="form_group payment_due">
               <label for="paymentDue">Payment Terms</label>
-              <div class="paymentDue" id="paymentDue" :value="invoice.paymentDue" @click="togglePaymentTerm">
+              <div class="paymentDue" id="paymentDue" :value="invoiceInfo.paymentDue" @click="togglePaymentTerm">
                 <span>net {{ paymentDueInDays }} days</span>
                 <arrowDownIcon />
               </div>
@@ -139,7 +164,7 @@ const changePaymentDue = (days) => {
 
           <div class="form_group desc">
             <label for="desc">Project Description</label>
-            <input type="text" id="desc" :value="invoice.description">
+            <input type="text" id="desc" v-model="invoiceInfo.description">
           </div>
 
         </div>
@@ -157,7 +182,7 @@ const changePaymentDue = (days) => {
             </div>
 
             <div class="table_body">
-              <div class="item_info" v-for="item in invoice.items">
+              <div class="item_info" v-for="item in invoiceInfo.items">
                 <div class="item_name">{{ item.name }}</div>
                 <div class="item_qty">{{ item.quantity }}</div>
                 <div class="item_price">{{ item.price }}</div>

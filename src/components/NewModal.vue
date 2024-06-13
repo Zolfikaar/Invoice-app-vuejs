@@ -1,13 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router'
 import arrowDownIcon from '@/components/icons/IconArrowDown.vue'
-import calendarIcon from '@/components/icons/IconCalendar.vue'
 import deleteIcon from '@/components/icons/IconDelete.vue'
 import { useInvoiceStore } from '@/stores/invoiceStore'
 
-const router = useRouter()
-const emit = defineEmits(['onShowNewModal', 'closeNewModal'])
+const emit = defineEmits(['onShowNewModal', 'closeNewModal', 'invoice-updated'])
 
 let invoiceInfo = ref({
   id: '',
@@ -34,7 +31,7 @@ let invoiceInfo = ref({
   total: 0,
 })
 
-let invoices = ref()
+let invoices = ref([])
 onMounted(async () => invoices.value = await useInvoiceStore().getInvoices())
 
 
@@ -51,8 +48,6 @@ const changePaymentTermValue = (val) => {
   paymentTermValue.value = val
   showPaymentTerm.value = false
   invoiceInfo.value.paymentTerms = val
-
-  // from the date and paymentTerms value calculate the paymentDue value 
 
   let paymentTermsVal = val;
 
@@ -105,32 +100,36 @@ const changePaymentTermValue = (val) => {
 
 
 let errors = ref({
-  street: false,
-  city: false,
-  senderAddressPostCode: false,
-  senderAddressCountry: false,
+  description: false,
   clientName: false,
   clientEmail: false,
+  senderAddressStreet: false,
+  senderAddressCity: false,
+  senderAddressPostCode: false,
+  senderAddressCountry: false,
   clientAddressStreet: false,
   clientAddressCity: false,
   clientAddressPostCode: false,
   clientAddressCountry: false,
-  description: false,
 })
 
 // // Check if all values in the errors object are true
 let allEmpty = ref(true)
 function checkAllErrors() {
+
   // Get the values of the errors object
   const errorValues = Object.values(errors.value);
 
   // Check if all values are true
   const allErrorsTrue = errorValues.every(value => value === true);
 
+  const allErrorsFalse = errorValues.every(value => value === false);
+
   // Display an error message if all values are true
   if (allErrorsTrue) {
     allEmpty.value = true
-  } else {
+  }
+  if (allErrorsFalse) {
     allEmpty.value = false
   }
 
@@ -138,18 +137,71 @@ function checkAllErrors() {
 
 function validateInvoiceInfo(invoiceInfo) {
 
-  for (let invoiceItem in invoiceInfo.value) {
-    if (invoiceItem === 'createdAt') {
-      return
-    } else {
+  if (invoiceInfo.description === '') {
+    errors.value.description = true
+  } else {
+    errors.value.description = false
+  }
 
-      if (invoiceInfo.value[invoiceItem] === '') {
-        errors.value[invoiceItem] = true
-      } else {
-        errors.value[invoiceItem] = false
-      }
+  if (invoiceInfo.clientEmail === '') {
+    errors.value.clientEmail = true
+  } else {
+    errors.value.clientEmail = false
+  }
 
-    }
+  if (invoiceInfo.clientName === '') {
+    errors.value.clientName = true
+  } else {
+    errors.value.clientName = false
+  }
+
+  if (invoiceInfo.items.length === 0) {
+    emptyList.value = true
+  } else {
+    emptyList.value = false
+  }
+
+
+  if (invoiceInfo.senderAddress.street === '') {
+    errors.value.senderAddressStreet = true
+  } else {
+    errors.value.senderAddressStreet = false
+  }
+  if (invoiceInfo.senderAddress.city === '') {
+    errors.value.senderAddressCity = true
+  } else {
+    errors.value.senderAddressCity = false
+  }
+  if (invoiceInfo.senderAddress.country === '') {
+    errors.value.senderAddressCountry = true
+  } else {
+    errors.value.senderAddressCountry = false
+  }
+  if (invoiceInfo.senderAddress.postCode === '') {
+    errors.value.senderAddressPostCode = true
+  } else {
+    errors.value.senderAddressPostCode = false
+  }
+
+  if (invoiceInfo.clientAddress.street === '') {
+    errors.value.clientAddressStreet = true
+  } else {
+    errors.value.clientAddressStreet = false
+  }
+  if (invoiceInfo.clientAddress.city === '') {
+    errors.value.clientAddressCity = true
+  } else {
+    errors.value.clientAddressCity = false
+  }
+  if (invoiceInfo.clientAddress.country === '') {
+    errors.value.clientAddressCountry = true
+  } else {
+    errors.value.clientAddressCountry = false
+  }
+  if (invoiceInfo.clientAddress.postCode === '') {
+    errors.value.clientAddressPostCode = true
+  } else {
+    errors.value.clientAddressPostCode = false
   }
 
   checkAllErrors()
@@ -219,6 +271,7 @@ const addListItem = () => {
   let listitems = checkItemList()
   if (listitems !== undefined) {
     invoiceInfo.value.items.push(listitems)
+    emptyList.value = false
   }
 
 }
@@ -226,8 +279,18 @@ const addListItem = () => {
 const onDraft = () => {
 
   let newId = generateID()
-  // invoiceInfo.value.status = 'draft'
 
+  invoiceInfo.value.id = newId
+
+  invoiceInfo.value.status = 'draft'
+
+  let updatedInvoices = JSON.parse(localStorage.getItem('invoices'))
+  updatedInvoices.push(invoiceInfo.value)
+  localStorage.setItem('invoices', JSON.stringify(updatedInvoices))
+
+  emit('invoice-updated', true);
+
+  closeModal()
 
 }
 
@@ -290,34 +353,38 @@ const generateIDWithRateLimit = () => {
 
 }
 
+
 const onSubmit = () => {
 
-  validateInvoiceInfo(invoiceInfo);
-  checkAllErrors()
-  // checkItemList()
+  validateInvoiceInfo(invoiceInfo.value);
 
-  let newId = generateIDWithRateLimit()
+  // only if all fields are filled and the item list is not empty, then add the invoice 
+  if (!allEmpty.value && !emptyList.value) {
 
-  invoiceInfo.value.id = newId
+    let newId = generateIDWithRateLimit()
 
-  // invoice total from item totals
-  let invoiceTotal = 0
-  invoiceInfo.value.items.forEach((itemTotal) => invoiceTotal += itemTotal.total)
+    invoiceInfo.value.id = newId
 
-  invoiceInfo.value.total = invoiceTotal
-  invoiceInfo.value.status = 'pending'
+    // invoice total from item totals
+    let invoiceTotal = 0
+    invoiceInfo.value.items.forEach((itemTotal) => invoiceTotal += itemTotal.total)
+
+    invoiceInfo.value.total = invoiceTotal
+    invoiceInfo.value.status = 'pending'
 
 
-  // NOW all data are ready to be saved in local storage
+    // NOW all data are ready to be saved in local storage
 
-  let updatedInvoices = JSON.parse(localStorage.getItem('invoices'))
-  updatedInvoices.push(invoiceInfo.value)
-  localStorage.setItem('invoices', JSON.stringify(updatedInvoices))
+    let updatedInvoices = JSON.parse(localStorage.getItem('invoices'))
+    updatedInvoices.push(invoiceInfo.value)
+    localStorage.setItem('invoices', JSON.stringify(updatedInvoices))
 
-  // Emit event to notify invoice update
-  emit('invoice-updated');
 
-  closeModal()
+    // Emit event to notify invoice update
+    emit('invoice-updated', true);
+
+    closeModal()
+  }
 }
 </script>
 
@@ -333,13 +400,13 @@ const onSubmit = () => {
         <div class="bill_from_group">
           <p class="group_header">Bill From</p>
 
-          <div class="form_group st_address" :class="errors.street ? 'is_empty' : ''">
-            <label for="st_address">Street Address <span class="error_msg" v-if="errors.street">Can't be
+          <div class="form_group st_address" :class="errors.senderAddressStreet ? 'is_empty' : ''">
+            <label for="st_address">Street Address <span class="error_msg" v-if="errors.senderAddressStreet">Can't be
                 empty</span></label>
             <input type="text" id="st_address" v-model="invoiceInfo.senderAddress.street">
           </div>
           <div class="other_info">
-            <div class="form_group city" :class="errors.city ? 'is_empty' : ''">
+            <div class="form_group city" :class="errors.senderAddressCity ? 'is_empty' : ''">
               <label for="city">City</label>
               <input type="text" id="city" v-model="invoiceInfo.senderAddress.city">
             </div>
@@ -418,7 +485,7 @@ const onSubmit = () => {
 
           </div>
 
-          <div class="form_group desc" :class="errors.clientAddressCountry ? 'is_empty' : ''">
+          <div class="form_group desc" :class="errors.description ? 'is_empty' : ''">
             <label for="desc">Project Description <span class="error_msg" v-if="errors.description">Can't be
                 empty</span></label>
             <input type="text" id="desc" v-model="invoiceInfo.description">
@@ -442,7 +509,7 @@ const onSubmit = () => {
 
               <div class="item_info" v-for="item in itemList">
                 <input type="text" class="item_name" v-model="item.name">
-                <input type="number" class="item_qty" v-model="item.qty" @input="updateItemList(item)">
+                <input type="number" class="item_qty" v-model="item.quantity" @input="updateItemList(item)">
                 <input type="number" class="item_price" v-model="item.price" @input="updateItemList(item)">
                 <div class="item_total"> {{ item.total }} </div>
                 <deleteIcon @click="deleteListItem(item)" />

@@ -56,9 +56,22 @@ const filterInvoices = () => {
   }
 }
 
-const rerenderInvoices = async () => {
-  invoices.value = await useInvoiceStore().getInvoices()
-  filteredInvoices.value = invoices.value
+
+const rerenderInvoices = (dataAdded) => {
+  // console.log('emmit working');
+  // console.log(dataAdded);
+  if (dataAdded) {
+
+    // console.log('Invoice Added Successfully');
+
+    const updatedInvoices = JSON.parse(localStorage.getItem('invoices')) || [];
+
+    invoices.value = updatedInvoices;
+
+    filteredInvoices.value = invoices.value
+  }
+
+  // call showNotification()
 }
 
 /* ===================================================== */
@@ -74,9 +87,9 @@ const toggleNewModal = () => {
 
 <template>
 
-  <NewModal v-if="showNewModal" @closeNewModal="toggleNewModal" />
+  <NewModal v-if="showNewModal" @closeNewModal="toggleNewModal" @invoice-updated="rerenderInvoices" />
 
-  <main class="home__content">
+  <main class="home__content" @click.self="showFilters = false">
 
     <div class="content__header">
 
@@ -120,7 +133,7 @@ const toggleNewModal = () => {
 
     </div>
 
-    <div class="invoices" v-if="invoices" @invoice-updated="rerenderInvoices">
+    <div class="invoices" v-if="invoices">
 
       <div v-for="invoice in filteredInvoices" :key="invoice.id" class="invoice">
         <router-link :to="{ path: 'view-invoice/' + invoice.id }">
