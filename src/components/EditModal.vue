@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import calendarIcon from '@/components/icons/IconCalendar.vue'
 import arrowDownIcon from '@/components/icons/IconArrowDown.vue'
 import deleteIcon from '@/components/icons/IconDelete.vue'
 import plusIcon from '@/components/icons/IconPlus.vue'
@@ -11,7 +10,7 @@ const props = defineProps({
     required: true,
   },
 })
-const emit = defineEmits(['onEdit', 'closeEditModal'])
+const emit = defineEmits(['toggleEditModal', 'update-invoice'])
 
 const editedInvoice = ref({ ...props.invoice })
 let invoiceInfo = ref({
@@ -39,37 +38,297 @@ let invoiceInfo = ref({
   total: editedInvoice.value.total,
 })
 
-let paymentDueInDays = ref()
 onMounted(() => {
-  // Use a regular expression to match the last number
-  const createdDayes = props.invoice.createdAt.match(/(\d+)(?!.*\d)/)[0];
-  const dueDayes = props.invoice.paymentDue.match(/(\d+)(?!.*\d)/)[0];
 
-  paymentDueInDays.value = Number(dueDayes - createdDayes)
 })
 
 let showPaymentTerm = ref(false)
-const togglePaymentTerm = () => showPaymentTerm.value = !showPaymentTerm.value
-
-const onEdit = () => {
-
-  console.log(invoiceInfo.value);
-  emit('onEdit')
-}
-
-let toggleEditModal = ref()
-const closeModal = () => {
-  emit('closeEditModal', toggleEditModal.value)
-}
-
-const changePaymentDue = (days) => {
-  days === 1 ? paymentDueInDays.value = 1
-    : days === 7 ? paymentDueInDays.value = 7
-      : days === 14 ? paymentDueInDays.value = 14
-        : days === 30 ? paymentDueInDays.value = 30 : 0
-
+const togglePaymentTerm = () => {
   showPaymentTerm.value = !showPaymentTerm.value
 }
+
+let paymentTermValue = ref(30)
+const changePaymentTermValue = (val) => {
+  paymentTermValue.value = val
+  showPaymentTerm.value = false
+  invoiceInfo.value.paymentTerms = val
+
+  let paymentTermsVal = val;
+
+  let createdAtVal = invoiceInfo.value.createdAt
+
+  if (createdAtVal == null) {
+
+    // Create a date object for the current date
+    let currentDate = new Date();
+
+    // Function to pad single digit months and days with a leading zero
+    function pad(number) {
+      return number < 10 ? '0' + number : number;
+    }
+
+    // Extract the year, month, and day from the date object
+    let year = currentDate.getFullYear();
+    let month = pad(currentDate.getMonth() + 1); // Add 1 to the month since it is zero-indexed
+    let day = pad(currentDate.getDate());
+
+    // Format the date
+    let formatted_date = `${year}-${month}-${day}`;
+
+    createdAtVal = formatted_date
+
+    invoiceInfo.value.createdAt = createdAtVal
+  }
+
+
+  let createdAtDayVal = parseInt(createdAtVal.slice(8))
+  let createdAtMonthVal = parseInt(createdAtVal.slice(5, 7))
+  let createdAtYearVal = parseInt(createdAtVal.slice(0, 4))
+
+  let updatedPaymentDue = null
+  const numDays = (y, m) => new Date(y, m, 0).getDate();
+  let monthDaysCount = numDays(createdAtYearVal, createdAtMonthVal)
+
+  if (paymentTermsVal + createdAtDayVal > monthDaysCount) {
+    createdAtMonthVal++;
+    let updatedCreatedAtDayVal = (paymentTermsVal + createdAtDayVal) - monthDaysCount
+    updatedPaymentDue = `${createdAtYearVal}-${createdAtMonthVal}-${updatedCreatedAtDayVal}`;
+  } else if (paymentTermsVal + createdAtDayVal <= monthDaysCount) {
+    let updatedCreatedAtDayVal = paymentTermsVal + createdAtDayVal
+    updatedPaymentDue = `${createdAtYearVal}-${createdAtMonthVal}-${updatedCreatedAtDayVal}`;
+  }
+
+  invoiceInfo.value.paymentDue = updatedPaymentDue
+
+}
+
+let errors = ref({
+  description: false,
+  clientName: false,
+  clientEmail: false,
+  senderAddressStreet: false,
+  senderAddressCity: false,
+  senderAddressPostCode: false,
+  senderAddressCountry: false,
+  clientAddressStreet: false,
+  clientAddressCity: false,
+  clientAddressPostCode: false,
+  clientAddressCountry: false,
+})
+
+// // Check if all values in the errors object are true
+let allEmpty = ref(true)
+function checkAllErrors() {
+
+  // Get the values of the errors object
+  const errorValues = Object.values(errors.value);
+
+  // Check if all values are true
+  const allErrorsTrue = errorValues.every(value => value === true);
+
+  const allErrorsFalse = errorValues.every(value => value === false);
+
+  // Display an error message if all values are true
+  if (allErrorsTrue) {
+    allEmpty.value = true
+  }
+  if (allErrorsFalse) {
+    allEmpty.value = false
+  }
+
+}
+
+function validateInvoiceInfo(invoiceInfo) {
+
+  if (invoiceInfo.description === '') {
+    errors.value.description = true
+  } else {
+    errors.value.description = false
+  }
+
+  if (invoiceInfo.clientEmail === '') {
+    errors.value.clientEmail = true
+  } else {
+    errors.value.clientEmail = false
+  }
+
+  if (invoiceInfo.clientName === '') {
+    errors.value.clientName = true
+  } else {
+    errors.value.clientName = false
+  }
+
+  if (invoiceInfo.items.length === 0) {
+    emptyList.value = true
+  } else {
+    emptyList.value = false
+  }
+
+
+  if (invoiceInfo.senderAddress.street === '') {
+    errors.value.senderAddressStreet = true
+  } else {
+    errors.value.senderAddressStreet = false
+  }
+  if (invoiceInfo.senderAddress.city === '') {
+    errors.value.senderAddressCity = true
+  } else {
+    errors.value.senderAddressCity = false
+  }
+  if (invoiceInfo.senderAddress.country === '') {
+    errors.value.senderAddressCountry = true
+  } else {
+    errors.value.senderAddressCountry = false
+  }
+  if (invoiceInfo.senderAddress.postCode === '') {
+    errors.value.senderAddressPostCode = true
+  } else {
+    errors.value.senderAddressPostCode = false
+  }
+
+  if (invoiceInfo.clientAddress.street === '') {
+    errors.value.clientAddressStreet = true
+  } else {
+    errors.value.clientAddressStreet = false
+  }
+  if (invoiceInfo.clientAddress.city === '') {
+    errors.value.clientAddressCity = true
+  } else {
+    errors.value.clientAddressCity = false
+  }
+  if (invoiceInfo.clientAddress.country === '') {
+    errors.value.clientAddressCountry = true
+  } else {
+    errors.value.clientAddressCountry = false
+  }
+  if (invoiceInfo.clientAddress.postCode === '') {
+    errors.value.clientAddressPostCode = true
+  } else {
+    errors.value.clientAddressPostCode = false
+  }
+
+  checkAllErrors()
+
+}
+
+let itemListId = 0
+let itemListName = ref()
+let itemListQty = ref()
+let itemListPrice = ref()
+let itemListTotal = ref(0)
+
+let itemList = ref([])
+
+let emptyList = ref(true)
+function checkItemList() {
+
+  // check if inputs are filled
+  if (itemListName.value !== undefined && itemListQty.value !== undefined && itemListPrice.value !== undefined) {
+
+    // increment item id befor adding it to the array to avoid initial value
+    itemListId++
+
+    // group the data from inputs
+    let itemData = {
+      id: itemListId,
+      name: itemListName.value,
+      quantity: itemListQty.value,
+      price: itemListPrice.value,
+      total: itemListQty.value * itemListPrice.value,
+    }
+
+    // push item data to itemList array
+    itemList.value.push(itemData)
+
+    // change error status
+    emptyList.value = false
+
+    // the itemListId will not be reseted, because we need it for adding the next new element
+
+    // reset inputs
+    itemListName = ref()
+    itemListQty = ref()
+    itemListPrice = ref()
+    itemListTotal = ref(0)
+
+
+    return itemData
+
+  }
+
+}
+
+const updateItemList = (item) => {
+  let oldItemIndex = invoiceInfo.value.items.indexOf(item)
+  invoiceInfo.value.items[oldItemIndex].total = item.qty * item.price
+}
+
+const deleteListItem = (item) => {
+  let currentItemIndex = invoiceInfo.value.items.indexOf(item)
+  let currentItem = invoiceInfo.value.items[currentItemIndex]
+  invoiceInfo.value.items.pop(currentItem)
+  itemList.value.pop(currentItem)
+}
+
+const addListItem = () => {
+  let listitems = checkItemList()
+  if (listitems !== undefined) {
+    invoiceInfo.value.items.push(listitems)
+    emptyList.value = false
+  }
+
+}
+
+
+
+const onEdit = () => {
+  // console.log(invoiceInfo.value);
+
+  validateInvoiceInfo(invoiceInfo.value);
+
+  // only if all fields are filled and the item list is not empty, then add the invoice 
+
+  if (!allEmpty.value && !emptyList.value) {
+
+    // invoice total from item totals
+    let invoiceTotal = 0
+    invoiceInfo.value.items.forEach((itemTotal) => invoiceTotal += itemTotal.total)
+
+    invoiceInfo.value.total = invoiceTotal
+    invoiceInfo.value.status = 'pending'
+
+    // NOW all data are ready to be saved in local storage
+    // get current invoice with old data
+
+    let invoices = JSON.parse(localStorage.getItem('invoices'))
+
+    let currentInvoice = invoices.filter((invoice) => invoice.id == invoiceInfo.value.id)
+
+    let invoiceIndex = invoices.indexOf(currentInvoice[0])
+
+    // removeing the old feedbacks from local storage
+    if (invoiceIndex > -1) { // only splice array when item is found
+      invoices.splice(invoiceIndex, 1) // 2nd parameter means remove one item only
+    }
+
+    invoices.push(invoiceInfo.value)
+
+    localStorage.setItem('invoices', JSON.stringify(invoices))
+
+
+
+    closeModal()
+
+
+  }
+
+  emit('update-invoice', true)
+  // console.log(invoiceInfo.value.senderAddress.street);
+}
+
+const closeModal = () => emit('toggleEditModal')
+
+
 </script>
 
 <template>
@@ -82,22 +341,28 @@ const changePaymentDue = (days) => {
         <div class="bill_from_group">
           <p class="group_header">Bill From</p>
 
-          <div class="form_group st_address">
-            <label for="st_address">Street Address</label>
+          <div class="form_group st_address" :class="errors.senderAddressStreet ? 'is_empty' : ''">
+            <label for="st_address">Street Address <span class="error_msg" v-if="errors.senderAddressStreet">Can't be
+                empty</span></label>
             <input type="text" id="st_address" v-model="invoiceInfo.senderAddress.street">
+
           </div>
+
           <div class="other_info">
-            <div class="form_group city">
+            <div class="form_group city" :class="errors.senderAddressCity ? 'is_empty' : ''">
               <label for="city">City</label>
               <input type="text" id="city" v-model="invoiceInfo.senderAddress.city">
+
             </div>
-            <div class="form_group postCode">
-              <label for="postCode">Post Code</label>
+            <div class="form_group postCode" :class="errors.senderAddressPostCode ? 'is_empty' : ''">
+              <label for="postCode">Post Code </label>
               <input type="text" id="postCode" v-model="invoiceInfo.senderAddress.postCode">
+
             </div>
-            <div class="form_group country">
-              <label for="country">Country</label>
+            <div class="form_group country" :class="errors.senderAddressCountry ? 'is_empty' : ''">
+              <label for="country">Country </label>
               <input type="text" id="country" v-model="invoiceInfo.senderAddress.country">
+
             </div>
           </div>
         </div>
@@ -106,34 +371,44 @@ const changePaymentDue = (days) => {
           <div class="main_info">
             <p class="group_header">Bill To</p>
 
-            <div class="form_group clientName">
-              <label for="clientName">Client Name</label>
+            <div class="form_group clientName" :class="errors.clientName ? 'is_empty' : ''">
+              <label for="clientName">Client Name <span class="error_msg" v-if="errors.clientName">Can't be
+                  empty</span></label>
               <input type="text" id="clientName" v-model="invoiceInfo.clientName">
+
             </div>
 
-            <div class="form_group clientEmail">
-              <label for="clientEmail">Client Email</label>
+            <div class="form_group clientEmail" :class="errors.clientEmail ? 'is_empty' : ''">
+              <label for="clientEmail">Client Email <span class="error_msg" v-if="errors.clientEmail">Can't be
+                  empty</span></label>
               <input type="text" id="clientEmail" v-model="invoiceInfo.clientEmail">
+
             </div>
 
-            <div class="form_group streetAddress">
-              <label for="streetAddress">Street Address</label>
+            <div class="form_group streetAddress" :class="errors.clientName ? 'is_empty' : ''">
+              <label for="streetAddress">Street Address <span class="error_msg" v-if="errors.clientAddressStreet">Can't
+                  be
+                  empty</span></label>
               <input type="text" id="streetAddress" v-model="invoiceInfo.clientAddress.street">
+
             </div>
           </div>
 
           <div class="other_info">
-            <div class="form_group city">
+            <div class="form_group city" :class="errors.clientAddressCity ? 'is_empty' : ''">
               <label for="city">City</label>
               <input type="text" id="city" v-model="invoiceInfo.clientAddress.city">
+
             </div>
-            <div class="form_group postCode">
-              <label for="postCode">Post Code</label>
+            <div class="form_group postCode" :class="errors.clientAddressPostCode ? 'is_empty' : ''">
+              <label for="postCode">Post Code </label>
               <input type="text" id="postCode" v-model="invoiceInfo.clientAddress.postCode">
+
             </div>
-            <div class="form_group country">
-              <label for="country">Country</label>
+            <div class="form_group country" :class="errors.clientAddressCountry ? 'is_empty' : ''">
+              <label for="country">Country </label>
               <input type="text" id="country" v-model="invoiceInfo.clientAddress.country">
+
             </div>
           </div>
 
@@ -141,30 +416,32 @@ const changePaymentDue = (days) => {
             <div class="form_group invoice_date">
               <label for="invoiceDate">Invoice Date</label>
               <div id="invoiceDate" class="invoiceDate">
-                {{ invoiceInfo.createdAt }}
-                <calendarIcon />
+                <input type="date" id="start" v-model="invoiceInfo.createdAt"
+                  v-if="invoiceInfo.createdAt !== null ? invoiceInfo.createdAt : 'mm/dd/yyyy'" disabled />
               </div>
             </div>
             <div class="form_group payment_due">
               <label for="paymentDue">Payment Terms</label>
-              <div class="paymentDue" id="paymentDue" :value="invoiceInfo.paymentDue" @click="togglePaymentTerm">
-                <span>net {{ paymentDueInDays }} days</span>
+              <div class="paymentDue" id="paymentDue" @click="togglePaymentTerm">
+                <span>Net {{ paymentTermValue }} Day{{ paymentTermValue == 1 ? '' : 's' }}</span>
                 <arrowDownIcon />
               </div>
 
               <div class="paymentTermBox" v-if="showPaymentTerm">
-                <span @click="changePaymentDue(1)">Net 1 Day</span>
-                <span @click="changePaymentDue(7)">Net 7 Days</span>
-                <span @click="changePaymentDue(14)">Net 14 Days</span>
-                <span @click="changePaymentDue(30)">Net 30 Days</span>
+                <span @click="changePaymentTermValue(1)">Net 1 Day</span>
+                <span @click="changePaymentTermValue(7)">Net 7 Days</span>
+                <span @click="changePaymentTermValue(14)">Net 14 Days</span>
+                <span @click="changePaymentTermValue(30)">Net 30 Days</span>
               </div>
             </div>
 
           </div>
 
-          <div class="form_group desc">
-            <label for="desc">Project Description</label>
+          <div class="form_group desc" :class="errors.description ? 'is_empty' : ''">
+            <label for="desc">Project Description <span class="error_msg" v-if="errors.description">Can't be
+                empty</span></label>
             <input type="text" id="desc" v-model="invoiceInfo.description">
+
           </div>
 
         </div>
@@ -182,26 +459,45 @@ const changePaymentDue = (days) => {
             </div>
 
             <div class="table_body">
+
               <div class="item_info" v-for="item in invoiceInfo.items">
-                <div class="item_name">{{ item.name }}</div>
-                <div class="item_qty">{{ item.quantity }}</div>
-                <div class="item_price">{{ item.price }}</div>
-                <div class="item_total">{{ item.total }}</div>
-                <deleteIcon />
+                <input type="text" class="item_name" v-model="item.name">
+                <input type="number" class="item_qty" v-model="item.quantity" @input="updateItemList(item)">
+                <input type="number" class="item_price" v-model="item.price" @input="updateItemList(item)">
+                <div class="item_total"> {{ item.total }} </div>
+                <deleteIcon @click="deleteListItem(item)" />
               </div>
+
+              <div class="item_info new_row" v-if="invoiceInfo.items.length === 0">
+                <input type="text" class="item_name" v-model="itemListName">
+                <input type="number" class="item_qty" v-model="itemListQty">
+                <input type="number" class="item_price" v-model="itemListPrice">
+                <div class="item_total"> {{ itemListQty * itemListPrice || itemListTotal }} </div>
+              </div>
+
+              <div class="item_info new_row" v-else="itemList.length > 0">
+                <input type="text" class="item_name" v-model="itemListName">
+                <input type="number" class="item_qty" v-model="itemListQty">
+                <input type="number" class="item_price" v-model="itemListPrice">
+                <div class="item_total"> {{ itemListQty * itemListPrice || itemListTotal }} </div>
+              </div>
+
+
+
             </div>
 
-            <div class="add_new_item_btn">
-              <plusIcon /> Add New Item
+            <div class="add_new_item_btn" @click="addListItem">
+              <plusIcon /> Add New Item / Update Item
             </div>
 
             <div class="errors_box">
-              <div>- All fields must be added</div>
-              <div>- An item must be added</div>
+              <div v-if="allEmpty">- All fields must be added</div>
+              <div v-if="invoiceInfo.items.length === 0">- An item must be added</div>
             </div>
           </div>
 
         </div>
+
       </div>
 
       <div class="btns">
@@ -234,6 +530,7 @@ const changePaymentDue = (days) => {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   padding: 30px;
+  color: var(--txt-clr);
 }
 
 .edit_modal_overlay .edit_modal h2 {
@@ -396,8 +693,15 @@ const changePaymentDue = (days) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--ele-dark-clr)
+  background-color: var(--ele-dark-clr);
 }
+
+.edit_modal_content_box .bill_to_group .dates_info .form_group.invoice_date .invoiceDate input {
+  background-color: var(--ele-dark-clr);
+  color: rgba(126, 136, 195, .5);
+  border: none;
+}
+
 
 .edit_modal_content_box .bill_to_group .dates_info .form_group.payment_due .paymentDue {
   color: var(--txt-clr);
@@ -466,8 +770,6 @@ const changePaymentDue = (days) => {
   color: #777F98;
 }
 
-.edit_modal_content_box .invoice_items .item_table {}
-
 .edit_modal_content_box .invoice_items .item_table .table_header {
   display: flex;
   justify-content: space-between;
@@ -490,18 +792,30 @@ const changePaymentDue = (days) => {
   margin: 20px 0;
 }
 
-.edit_modal_content_box .invoice_items .item_table .table_body .item_info div:not(:last-of-type) {
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row {
+  margin-right: 50px
+}
+
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info input:focus {
+  /* border: 1px solid var(--primary-clr); */
+  outline: 1px solid var(--primary-clr);
+  ;
+}
+
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info input {
   color: var(--txt-clr);
   background-color: var(--ele-light-clr);
   border-radius: 5px;
+  border: none;
   height: 48px;
   line-height: 48px;
   font-weight: bold;
 }
 
-.edit_modal_content_box .invoice_items .item_table .table_body .item_info div:last-of-type {
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info input {
   color: var(--txt-clr);
   font-weight: bold;
+
 }
 
 .edit_modal_content_box .invoice_items .item_table .table_body .item_info .item_name {
@@ -519,7 +833,13 @@ const changePaymentDue = (days) => {
   text-align: center;
 }
 
-.edit_modal_content_box .invoice_items .item_table .table_body .item_info .item_total {}
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info .item_price input::-webkit-outer-spin-button,
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info .item_price input::-webkit-inner-spin-button,
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info .item_qty input::-webkit-outer-spin-button,
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info .item_qty input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
 
 .edit_modal_content_box .invoice_items .item_table .table_body .item_info svg:hover {
   cursor: pointer;
@@ -559,5 +879,27 @@ const changePaymentDue = (days) => {
 
 .edit_modal_overlay .edit_modal .btns .edit-btn {
   margin-right: 20px;
+}
+
+.edit_modal_content_box .bill_to_group .main_info .form_group.is_empty label,
+.edit_modal_content_box .bill_to_group .form_group.is_empty label,
+.edit_modal_content_box .bill_from_group .other_info .form_group.is_empty label,
+.edit_modal_content_box .bill_from_group .form_group.is_empty label {
+  color: var(--danger-clr);
+}
+
+.edit_modal_content_box .bill_to_group .main_info .form_group.is_empty label .error_msg,
+.edit_modal_content_box .bill_to_group .form_group.is_empty label .error_msg,
+.edit_modal_content_box .bill_from_group .other_info .form_group.is_empty label .error_msg,
+.edit_modal_content_box .bill_from_group .form_group.is_empty label .error_msg,
+.edit_modal_content_box .bill_to_group .form_group.desc.is_empty label .error_msg {
+  float: right;
+}
+
+.edit_modal_content_box .bill_to_group .main_info .form_group.is_empty input,
+.edit_modal_content_box .bill_to_group .form_group.is_empty input,
+.edit_modal_content_box .bill_from_group .other_info .form_group.is_empty input,
+.edit_modal_content_box .bill_from_group .form_group.is_empty input {
+  border: 1px solid var(--danger-clr);
 }
 </style>

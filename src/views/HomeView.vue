@@ -58,11 +58,8 @@ const filterInvoices = () => {
 
 
 const rerenderInvoices = (dataAdded) => {
-  // console.log('emmit working');
-  // console.log(dataAdded);
-  if (dataAdded) {
 
-    // console.log('Invoice Added Successfully');
+  if (dataAdded) {
 
     const updatedInvoices = JSON.parse(localStorage.getItem('invoices')) || [];
 
@@ -74,9 +71,7 @@ const rerenderInvoices = (dataAdded) => {
   // call showNotification()
 }
 
-/* ===================================================== */
-/* ============= Create New Invoice Modal ============== */
-/* ===================================================== */
+
 let showNewModal = ref(false)
 const toggleNewModal = () => {
   showNewModal.value = !showNewModal.value

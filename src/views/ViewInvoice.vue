@@ -61,11 +61,7 @@ const deleteInvoice = () => {
 let showEditModal = ref(false)
 const toggleEditModal = () => {
   showEditModal.value = !showEditModal.value
-}
-
-const confirmEdit = (editedInvoice) => {
-  // Perform edit action here
-  toggleEditModal()
+  // console.log(invoice.value.senderAddress.street);
 }
 
 
@@ -100,11 +96,21 @@ const changeInvoiceStatus = () => {
   }
 
 }
+
+const rerenderInvoice = (updateTrigger) => {
+
+  if (updateTrigger) {
+    invoice.value = currentInvoice;
+  }
+
+  // call showNotification()
+}
 </script>
 <template>
 
 
-  <EditModal v-if="showEditModal" :invoice="invoice" @onEdit="confirmEdit" @closeEditModal="toggleEditModal" />
+  <EditModal v-if="showEditModal" :invoice="invoice" @toggleEditModal="toggleEditModal"
+    @update-invoice="rerenderInvoice" />
 
   <DeleteModal v-if="showDeleteModal" :invoice="invoice" @onDelete="confirmDelete" @close="toggleDeleteModal" />
 
