@@ -958,4 +958,12 @@ const onSubmit = () => {
 .new_modal_overlay .new_modal .btns .draft-btn {
   margin-right: 20px;
 }
+
+
+@media screen and (min-width: 679px) and (max-width: 1180px) {
+  .new_modal_overlay .new_modal {
+    left: 0;
+    top: 80px;
+  }
+}
 </style>

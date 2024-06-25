@@ -169,6 +169,9 @@ const toggleNewModal = () => {
   color: var(--txt-clr);
 }
 
+/* ===================================================
+====================== Header  =======================
+=================================================== */
 .content__header {
   display: flex;
   justify-content: space-between;
@@ -313,12 +316,14 @@ const toggleNewModal = () => {
   height: 72px;
   border-radius: 10px;
   padding: 0 20px 0 50px;
+  text-decoration: none;
+  color: unset;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  text-decoration: none;
-  color: unset;
 }
+
+
 
 .invoices .invoice {
   border: 1px solid transparent;
@@ -347,6 +352,7 @@ const toggleNewModal = () => {
   font-weight: normal;
   line-height: 15px;
   letter-spacing: -.1px;
+  min-width: 55px;
 }
 
 .invoices .invoice .client__name {
@@ -354,10 +360,11 @@ const toggleNewModal = () => {
   font-weight: normal;
   line-height: 15px;
   letter-spacing: -.1px;
+  min-width: 105px;
 }
 
 .invoices .invoice .invoice__total {
-  margin-left: 100px;
+  min-width: 70px;
 }
 
 .invoices .invoice .invoice__status {
@@ -402,5 +409,12 @@ const toggleNewModal = () => {
 
 .no__invoices_content div p {
   margin-top: 20px;
+}
+
+@media screen and (min-width: 679px) and (max-width: 1180px) {
+  .home__content {
+    margin-top: 130px;
+    width: 88%;
+  }
 }
 </style>

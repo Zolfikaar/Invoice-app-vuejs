@@ -430,4 +430,11 @@ const rerenderInvoice = (updateTrigger) => {
 .invoice__content .content .bottom .table_footer h2 span {
   margin-right: 10px;
 }
+
+@media screen and (min-width: 679px) and (max-width: 1180px) {
+  .invoice__content {
+    margin-top: 100px;
+    width: 88%;
+  }
+}
 </style>

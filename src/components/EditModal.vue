@@ -902,4 +902,11 @@ const closeModal = () => emit('toggleEditModal')
 .edit_modal_content_box .bill_from_group .form_group.is_empty input {
   border: 1px solid var(--danger-clr);
 }
+
+@media screen and (min-width: 679px) and (max-width: 1180px) {
+  .edit_modal_overlay .edit_modal {
+    left: 0;
+    top: 80px;
+  }
+}
 </style>
