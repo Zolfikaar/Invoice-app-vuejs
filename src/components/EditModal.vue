@@ -447,12 +447,12 @@ const closeModal = () => emit('toggleEditModal')
         </div>
 
         <div class="invoice_items">
-          <p class="header">Item List</p>
+          <p class="list_title">Item List</p>
 
           <div class="item_table">
 
             <div class="table_header">
-              <span>Name</span>
+              <span>Item Name</span>
               <span class="qty_span">Qty.</span>
               <span>Price</span>
               <span>Total</span>
@@ -460,26 +460,46 @@ const closeModal = () => emit('toggleEditModal')
 
             <div class="table_body">
 
-              <div class="item_info" v-for="item in invoiceInfo.items">
+              <div class="item_info" v-for="item in itemList">
+                <span class="sm_label">Name</span>
                 <input type="text" class="item_name" v-model="item.name">
+                <span class="qty_span sm_label">Qty.</span>
                 <input type="number" class="item_qty" v-model="item.quantity" @input="updateItemList(item)">
+                <span class="sm_label">Price</span>
                 <input type="number" class="item_price" v-model="item.price" @input="updateItemList(item)">
+                <span class="sm_label">Total</span>
                 <div class="item_total"> {{ item.total }} </div>
-                <deleteIcon @click="deleteListItem(item)" />
+                <div class="delete_btn">
+                  <deleteIcon @click="deleteListItem(item)" />
+                </div>
               </div>
 
-              <div class="item_info new_row" v-if="invoiceInfo.items.length === 0">
+              <div class="item_info new_row" v-if="itemList.length === 0">
+                <span class="sm_label">Name</span>
                 <input type="text" class="item_name" v-model="itemListName">
+                <span class="qty_span sm_label">Qty.</span>
                 <input type="number" class="item_qty" v-model="itemListQty">
+                <span class="sm_label">Price</span>
                 <input type="number" class="item_price" v-model="itemListPrice">
+                <span class="sm_label">Total</span>
                 <div class="item_total"> {{ itemListQty * itemListPrice || itemListTotal }} </div>
+                <div class="delete_btn" style="visibility: hidden;width: 54px;">
+                  <deleteIcon @click="deleteListItem(item)" />
+                </div>
               </div>
 
               <div class="item_info new_row" v-else="itemList.length > 0">
+                <span class="sm_label">Name</span>
                 <input type="text" class="item_name" v-model="itemListName">
+                <span class="qty_span sm_label">Qty.</span>
                 <input type="number" class="item_qty" v-model="itemListQty">
+                <span class="sm_label">Price</span>
                 <input type="number" class="item_price" v-model="itemListPrice">
+                <span class="sm_label">Total</span>
                 <div class="item_total"> {{ itemListQty * itemListPrice || itemListTotal }} </div>
+                <div class="delete_btn" style="visibility: hidden;width: 54px;">
+                  <deleteIcon @click="deleteListItem(item)" />
+                </div>
               </div>
 
 
@@ -755,14 +775,19 @@ const closeModal = () => emit('toggleEditModal')
   cursor: pointer;
 }
 
-
-
-
 .edit_modal_content_box .invoice_items {
   margin-bottom: 50px;
 }
 
-.edit_modal_content_box .invoice_items header {
+.edit_modal_content_box .invoice_items .list_title {
+  color: #777F98;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 32px;
+  letter-spacing: -.38px;
+}
+
+.edit_modal_content_box .invoice_items .list_title {
   font-weight: bold;
   font-size: 18px;
   line-height: 32px;
@@ -770,31 +795,117 @@ const closeModal = () => emit('toggleEditModal')
   color: #777F98;
 }
 
+
+
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+
+
+
 .edit_modal_content_box .invoice_items .item_table .table_header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-right: 50px;
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
 }
 
 .edit_modal_content_box .invoice_items .item_table .table_header span {
   color: var(--txt-clr);
+  width: 71px;
 }
 
-.edit_modal_content_box .invoice_items .item_table .table_header span.qty_span {
-  margin-left: 150px;
+.edit_modal_content_box .invoice_items .item_table .table_header span:first-child {
+  grid-area: 1 / 1 / 2 / 2;
 }
+
+.edit_modal_content_box .invoice_items .item_table .table_header span:nth-child(2) {
+  grid-area: 1 / 3 / 2 / 3;
+  margin-left: 20px;
+}
+
+.edit_modal_content_box .invoice_items .item_table .table_header span:nth-child(3) {
+  grid-area: 1 / 4 / 2 / 4;
+}
+
+.edit_modal_content_box .invoice_items .item_table .table_header span:nth-child(4) {
+  grid-area: 1 / 4 / 2 / 5;
+}
+
+.edit_modal_content_box .invoice_items .item_table .table_header span:last-child {
+  grid-area: 1 / 5 / 2 / 6;
+}
+
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+
 
 .edit_modal_content_box .invoice_items .item_table .table_body .item_info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-column-gap: 20px;
+  grid-row-gap: 0px;
   margin: 20px 0;
 }
 
-.edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row {
-  margin-right: 50px
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info .item_total,
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info .delete_btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info:first-child {
+  grid-area: 1 / 1 / 2 / 2;
+}
+
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(2) {
+  grid-area: 1 / 3 / 2 / 3;
+}
+
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(3) {
+  grid-area: 1 / 4 / 2 / 4;
+}
+
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(4) {
+  grid-area: 1 / 4 / 2 / 5;
+}
+
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info:last-child {
+  grid-area: 1 / 5 / 2 / 6;
+}
+
+/* =============================================== */
+/* =============================================== */
+/* =============================================== */
+/* =============================================== */
+
+/* .edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-column-gap: 20px;
+  grid-row-gap: 0px;
+  margin: 20px 0;
+}
+
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row .item_total {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
 
 .edit_modal_content_box .invoice_items .item_table .table_body .item_info input:focus {
   /* border: 1px solid var(--primary-clr); */
@@ -841,13 +952,30 @@ const closeModal = () => emit('toggleEditModal')
   appearance: none;
 }
 
-.edit_modal_content_box .invoice_items .item_table .table_body .item_info svg:hover {
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row .sm_label,
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info .sm_label {
+  display: none;
+}
+
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info .delete_btn svg:hover {
   cursor: pointer;
 }
 
-.edit_modal_content_box .invoice_items .item_table .table_body .item_info svg:hover path {
+.edit_modal_content_box .invoice_items .item_table .table_body .item_info .delete_btn svg:hover path {
   fill: var(--danger-clr) !important;
 }
+
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+/* ======================================================= */
+
+
+
 
 .edit_modal_content_box .invoice_items .item_table .add_new_item_btn {
   height: 48px;
@@ -908,5 +1036,150 @@ const closeModal = () => emit('toggleEditModal')
     left: 0;
     top: 80px;
   }
+}
+
+@media screen and (min-width: 320px) and (max-width: 678px) {
+  .edit_modal_overlay .edit_modal {
+    left: 0;
+    top: 80px;
+    width: 100%;
+    padding: 20px;
+  }
+
+  .edit_modal_content_box .bill_from_group .other_info {
+    flex-direction: column;
+  }
+
+  .edit_modal_content_box .bill_from_group .other_info .form_group:not(:first-child) {
+    margin-top: 20px;
+  }
+
+  .edit_modal_content_box .bill_from_group .other_info .form_group,
+  .edit_modal_content_box .bill_from_group .other_info .form_group input {
+    width: 100%;
+  }
+
+  .edit_modal_content_box .bill_to_group .other_info {
+    flex-direction: column;
+  }
+
+  .edit_modal_content_box .bill_to_group .other_info .form_group:not(:first-child) {
+    margin-top: 20px;
+  }
+
+  .edit_modal_content_box .bill_to_group .other_info .form_group,
+  .edit_modal_content_box .bill_to_group .other_info .form_group input {
+    width: 100%;
+  }
+
+  .edit_modal_content_box .bill_to_group .dates_info .form_group {
+    width: 50%;
+  }
+
+  .edit_modal_content_box .bill_to_group .dates_info .form_group.invoice_date .invoiceDate {
+    width: 98%;
+  }
+
+  .edit_modal_content_box .bill_to_group .dates_info .form_group.payment_due .paymentDue {
+    width: 98%;
+    margin-left: 10px;
+  }
+
+
+  .edit_modal_content_box .invoice_items .item_table .table_header {
+    display: none;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body {
+    display: grid
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info {
+    display: grid;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:first-child {
+    grid-area: 1 / 1 / 2 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:last-child {
+    grid-area: 2 / 1 / 3 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row .sm_label,
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info .sm_label {
+    display: inline-block
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info span:nth-child(1) {
+    grid-area: 1 / 1 / 2 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info input.item_name {
+    grid-area: 2 / 1 / 3 / 6;
+    margin: 10px 0 30px 0;
+    width: 100%;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info input.item_qty {
+    grid-area: 6 / 1 / 7 / 2;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info input.item_price {
+    grid-area: 6 / 2 / 7 / 4;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info span:nth-child(7) {
+    grid-area: 3 / 3 / 6 / 5;
+    margin-left: 60px;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info .item_total {
+    grid-area: 6 / 3 / 6 / 5;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info .item_qty,
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info .item_price,
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info .item_total {
+    margin-top: 10px;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info .delete_btn {
+    grid-area: 6 / 5 / 6 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row span:nth-child(1) {
+    grid-area: 1 / 1 / 2 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row input.item_name {
+    grid-area: 2 / 1 / 3 / 6;
+    margin: 10px 0 30px 0;
+    width: 100%;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row input.item_qty {
+    grid-area: 6 / 1 / 7 / 2;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row input.item_price {
+    grid-area: 6 / 2 / 7 / 4;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row span:nth-child(7) {
+    grid-area: 3 / 5 / 6 / 6;
+    margin-left: unset;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row .item_total {
+    grid-area: 6 / 5 / 6 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row .item_qty,
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row .item_price,
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row .item_total {
+    margin-top: 10px;
+  }
+
 }
 </style>

@@ -84,4 +84,10 @@ const closeModal = () => {
 .delete_modal_overlay .delete_modal .btns .edit-btn {
   margin-right: 10px;
 }
+
+@media screen and (min-width: 320px) and (max-width: 678px) {
+  .delete_modal_overlay .delete_modal {
+    width: 90%;
+  }
+}
 </style>

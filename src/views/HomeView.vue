@@ -90,8 +90,9 @@ const toggleNewModal = () => {
 
       <div class="left">
         <h1>Invoices</h1>
-        <div v-if="invoices">
-          <p>There are {{ invoices.length }} total invoices</p>
+        <div v-if="invoices" class="invoice_count">
+          <p class="lg_invoice_count">There are {{ invoices.length }} total invoices</p>
+          <p class="sm_invoice_count">{{ invoices.length }} invoices</p>
         </div>
         <div class="no__invoices" v-else>
           <p>No Invoices</p>
@@ -99,8 +100,8 @@ const toggleNewModal = () => {
       </div>
 
       <div class="right">
-        <div class="filters">
-          filter by
+        <div class="filters lg_filters">
+          /Filter by
           <div class="filter__select" @click="showHideFiltersBox">
             <span>status</span>
             <arrowDownIcon />
@@ -118,17 +119,38 @@ const toggleNewModal = () => {
             </div>
           </div>
         </div>
+
+        <div class="filters sm_filters">
+          Filter
+          <div class="filter__select" @click="showHideFiltersBox">
+            <arrowDownIcon />
+          </div>
+          <div class="filters-box" v-if="showFilters">
+            <div v-for="(filter, index) in filters" :key="index">
+              <div class="filter__group" :class="filter.val ? 'checked' : ''">
+                <div class="checkbox" @click="toggleFilters(index, filter.name)">
+                  <checkIcon v-if="filter.val" />
+                </div>
+                <label>{{ filter.name }}</label>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+
         <div class="create__invoice__btn" @click="toggleNewModal">
           <span class="arrow__icon">
             <plusIcon />
           </span>
-          <span>New Invoice</span>
+          <span class="lg_new_btn">New Invoice</span>
+          <span class="sm_new_btn">New</span>
         </div>
       </div>
 
     </div>
 
-    <div class="invoices" v-if="invoices">
+    <div class="invoices lg_invoices" v-if="invoices">
 
       <div v-for="invoice in filteredInvoices" :key="invoice.id" class="invoice">
         <router-link :to="{ path: 'view-invoice/' + invoice.id }">
@@ -145,6 +167,35 @@ const toggleNewModal = () => {
         </router-link>
       </div>
 
+    </div>
+
+    <div class="invoices sm_invoices" v-if="invoices">
+
+      <div v-for="invoice in filteredInvoices" :key="invoice.id" class="invoice">
+        <router-link :to="{ path: 'view-invoice/' + invoice.id }">
+
+          <div class="left">
+            <span class="invoice__id"><span>#</span>{{ invoice.id }}</span>
+
+            <p class="payment__due">{{ invoice.paymentDue }}</p>
+
+            <h3 class="invoice__total">${{ invoice.total }}</h3>
+          </div>
+
+          <div class="right">
+            <p class="client__name">{{ invoice.clientName }}</p>
+
+            <div class="invoice__status" :class="invoice.status + '-btn'">
+              <div class="layer">
+                <span></span>{{ invoice.status }}
+              </div>
+            </div>
+          </div>
+
+
+
+        </router-link>
+      </div>
 
     </div>
 
@@ -184,6 +235,14 @@ const toggleNewModal = () => {
   margin-top: 10px;
 }
 
+.content__header .left .invoice_count .lg_invoice_count {
+  display: inline-block;
+}
+
+.content__header .left .invoice_count .sm_invoice_count {
+  display: none;
+}
+
 .content__header .right {
   display: flex;
   justify-content: space-evenly;
@@ -195,6 +254,10 @@ const toggleNewModal = () => {
   line-height: 15px;
   letter-spacing: -.25px;
   font-weight: bold;
+}
+
+.content__header .right .filters.sm_filters {
+  display: none;
 }
 
 .content__header .right .filters .filter__select {
@@ -302,9 +365,26 @@ const toggleNewModal = () => {
   transform: translate(-50%, -50%);
 }
 
+
+.content__header .right .create__invoice__btn .lg_new_btn {
+  /* display: block; */
+}
+
+.content__header .right .create__invoice__btn .sm_new_btn {
+  display: none;
+}
+
 /* ============================================================================ */
 /* ============================================================================ */
 /* ============================================================================ */
+
+.invoices.sm_invoices {
+  display: none;
+}
+
+.invoices .invoice {
+  border: 1px solid transparent;
+}
 
 .invoices .invoice:not(:first-child) {
   margin-top: 20px;
@@ -321,12 +401,6 @@ const toggleNewModal = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-
-
-.invoices .invoice {
-  border: 1px solid transparent;
 }
 
 .invoices .invoice:hover {
@@ -415,6 +489,96 @@ const toggleNewModal = () => {
   .home__content {
     margin-top: 130px;
     width: 88%;
+  }
+}
+
+@media screen and (min-width: 320px) and (max-width: 678px) {
+
+  .content__header .left .invoice_count .lg_invoice_count {
+    display: none;
+  }
+
+  .content__header .left .invoice_count .sm_invoice_count {
+    display: inline-block;
+  }
+
+  .home__content {
+    margin-top: 100px;
+    width: 90%;
+  }
+
+  .content__header {
+    margin-bottom: 20px;
+  }
+
+  .content__header .left p {
+    margin-top: unset;
+  }
+
+  .content__header .right .filters.lg_filters {
+    display: none
+  }
+
+  .content__header .right .filters.sm_filters {
+    display: flex;
+  }
+
+  .content__header .right .create__invoice__btn {
+    width: 90px;
+    height: 44px;
+  }
+
+  .content__header .right .create__invoice__btn .lg_new_btn {
+    display: none;
+  }
+
+  .content__header .right .create__invoice__btn .sm_new_btn {
+    display: block;
+  }
+
+  /* ============= invoice style ================= */
+
+  .invoices.lg_invoices {
+    display: none;
+  }
+
+  .invoices.sm_invoices {
+    display: block;
+  }
+
+  .invoices.sm_invoices .invoice {
+    height: 134px;
+  }
+
+  .invoices.sm_invoices .invoice a {
+    height: inherit;
+    padding: unset
+  }
+
+  .invoices.sm_invoices .invoice a .left,
+  .invoices.sm_invoices .invoice a .right {
+    height: inherit;
+    padding: 20px;
+  }
+
+
+  .invoices.sm_invoices .invoice a .left,
+  .invoices.sm_invoices .invoice a .right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .invoices.sm_invoices .invoice a .left .payment__due {
+    margin-top: 20px
+  }
+
+  .invoices.sm_invoices .invoice a .right .client__name {
+    text-align: right;
+  }
+
+  .invoices.sm_invoices .invoice a svg {
+    display: none;
   }
 }
 </style>

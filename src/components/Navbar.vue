@@ -128,7 +128,6 @@ onMounted(() => {
   .nav .logo {
     height: 80px;
     width: 80px;
-
   }
 
   .nav .bottom__part {
@@ -147,5 +146,34 @@ onMounted(() => {
   }
 }
 
-@media screen and (min-width: 679px) and (max-width: 1180px) {}
+@media screen and (min-width: 320px) and (max-width: 678px) {
+  .nav {
+    position: absolute;
+    height: 80px;
+    width: 100%;
+    flex-direction: row;
+    border-top-right-radius: unset;
+    border-bottom-right-radius: unset;
+  }
+
+  .nav .logo {
+    height: 80px;
+    width: 80px;
+  }
+
+  .nav .bottom__part {
+    flex-direction: row;
+  }
+
+  .nav .bottom__part hr {
+    margin-top: unset;
+    margin-left: 20px;
+    width: 1px;
+    height: 80px;
+  }
+
+  .nav .bottom__part img {
+    margin: 40px 20px;
+  }
+}
 </style>

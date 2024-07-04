@@ -133,7 +133,6 @@ const rerenderInvoice = (updateTrigger) => {
         </div>
       </div>
       <div class="right">
-        <!-- @click="toggleEditModal" -->
         <div class="edit-btn" @click="toggleEditModal">Edit</div>
         <div class="delete-btn" @click="toggleDeleteModal">Delete</div>
         <div class="primary-btn" @click="toggleStatusModal" v-if="invoice.status === 'pending'">Mark as Paid</div>
@@ -183,6 +182,11 @@ const rerenderInvoice = (updateTrigger) => {
             <h3>{{ invoice.clientEmail }}</h3>
           </div>
         </div>
+
+        <div class="sm details__group client_email">
+          <p>Client Email</p>
+          <h3>{{ invoice.clientEmail }}</h3>
+        </div>
       </div>
 
       <div class="bottom">
@@ -206,13 +210,13 @@ const rerenderInvoice = (updateTrigger) => {
 
                 <div class="qty_and_price">
                   <h4>{{ item.quantity }}</h4>
-                  <h4>{{ item.price }}</h4>
+                  <h4>$ {{ item.price }}</h4>
                 </div>
 
               </div>
 
               <div class="total">
-                <h4>{{ item.total }}</h4>
+                <h4>$ {{ item.total }}</h4>
               </div>
 
             </div>
@@ -226,6 +230,11 @@ const rerenderInvoice = (updateTrigger) => {
         </div>
       </div>
 
+    </div>
+    <div class="invoice_footer">
+      <div class="edit-btn" @click="toggleEditModal">Edit</div>
+      <div class="delete-btn" @click="toggleDeleteModal">Delete</div>
+      <div class="primary-btn" @click="toggleStatusModal" v-if="invoice.status === 'pending'">Mark as Paid</div>
     </div>
   </div>
 </template>
@@ -318,6 +327,10 @@ const rerenderInvoice = (updateTrigger) => {
   margin: 0 10px;
 }
 
+.invoice__content .invoice_footer {
+  display: none;
+}
+
 /* ======================================================================= */
 /* =============================== Content ================================ */
 /* ===================================== ================================= */
@@ -339,6 +352,10 @@ const rerenderInvoice = (updateTrigger) => {
   display: flex;
   justify-content: space-between;
   margin-right: 100px;
+}
+
+.invoice__content .content .middle .sm.details__group.client_email {
+  display: none;
 }
 
 .invoice__content .content .middle .details .dates .details__group:last-child {
@@ -435,6 +452,88 @@ const rerenderInvoice = (updateTrigger) => {
   .invoice__content {
     margin-top: 100px;
     width: 88%;
+  }
+}
+
+@media screen and (min-width: 320px) and (max-width: 678px) {
+  .back_btn {
+    margin-top: unset;
+  }
+
+  .invoice__content {
+    margin-bottom: 0;
+    margin-top: 100px;
+    width: 90%;
+    position: relative;
+  }
+
+  .invoice__header {
+    margin-bottom: 20px !important;
+  }
+
+  .invoice__header .left {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .invoice__header .right {
+    display: none !important;
+  }
+
+  .invoice__content .invoice_footer {
+    position: relative;
+    bottom: 0;
+    border-radius: 10px;
+    padding: 0 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 50px 0;
+    height: 88px;
+    background-color: var(--ele-dark-clr);
+  }
+
+  .invoice__content .content {
+    padding: 20px;
+  }
+
+  .invoice__content .content .top {
+    flex-direction: column;
+    align-items: unset;
+    margin-bottom: 40px;
+  }
+
+  .invoice__content .content .top .right {
+    margin-top: 20px;
+  }
+
+  .invoice__content .content .middle .details {
+    margin-right: unset;
+  }
+
+  .invoice__content .content .middle .details .details__group.client_email {
+    display: none;
+  }
+
+  .invoice__content .content .middle .sm.details__group.client_email {
+    display: block;
+    margin-top: 20px;
+  }
+
+  .invoice__content .content .bottom .table_header {
+    display: none;
+  }
+
+  .invoice__content .content .bottom .table_body .item_row .name_and_qty_and_price {
+    flex-direction: column;
+  }
+
+  .invoice__content .content .bottom .table_body .item_row {
+    margin-bottom: 30px;
+  }
+
+  .invoice__content .content .bottom .table_body .item_row .name_and_qty_and_price .name {
+    margin-bottom: 10px;
   }
 }
 </style>
