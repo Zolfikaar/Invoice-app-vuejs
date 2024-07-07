@@ -101,7 +101,7 @@ const toggleNewModal = () => {
 
       <div class="right">
         <div class="filters lg_filters">
-          /Filter by
+          Filter by
           <div class="filter__select" @click="showHideFiltersBox">
             <span>status</span>
             <arrowDownIcon />

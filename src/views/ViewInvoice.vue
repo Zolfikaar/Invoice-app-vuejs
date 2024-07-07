@@ -61,7 +61,7 @@ const deleteInvoice = () => {
 let showEditModal = ref(false)
 const toggleEditModal = () => {
   showEditModal.value = !showEditModal.value
-  // console.log(invoice.value.senderAddress.street);
+
 }
 
 
@@ -240,39 +240,10 @@ const rerenderInvoice = (updateTrigger) => {
 </template>
 
 <style scoped>
-/* ================================================================ */
-/* ================================================================ */
-/* ============================ Header ============================ */
-/* ================================================================ */
-/* ================================================================ */
-
 .invoice__content {
   margin: 40px auto 50px auto;
   width: 60%;
   color: var(--txt-clr);
-}
-
-.back_btn {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 80px;
-  height: 50px;
-  margin: 20px 0;
-}
-
-.back_btn:hover {
-  cursor: pointer;
-  color: var(--txt-gray);
-}
-
-.back_btn:hover {
-  color: var(--txt-secondary);
-
-}
-
-.back_btn svg {
-  margin-bottom: 5px;
 }
 
 .invoice__content .invoice__header {

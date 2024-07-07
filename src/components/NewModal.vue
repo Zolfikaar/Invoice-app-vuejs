@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import arrowLeft from '@/components/icons/IconArrowLeft.vue'
 import arrowDownIcon from '@/components/icons/IconArrowDown.vue'
 import deleteIcon from '@/components/icons/IconDelete.vue'
 import { useInvoiceStore } from '@/stores/invoiceStore'
@@ -394,6 +395,11 @@ const onSubmit = () => {
   <div class="new_modal_overlay" @click.self="closeModal">
 
     <div class="new_modal">
+      <a class="back_btn" @click="closeModal">
+        <arrowLeft />
+        <p>Go back</p>
+      </a>
+
       <h2>New Invoice</h2>
 
       <div class="new_modal_content_box">
@@ -604,6 +610,10 @@ const onSubmit = () => {
   border-bottom-right-radius: 10px;
   padding: 30px;
   color: var(--txt-clr);
+}
+
+.new_modal_overlay .new_modal .back_btn {
+  display: none;
 }
 
 .new_modal_overlay .new_modal h2 {
@@ -1068,6 +1078,9 @@ const onSubmit = () => {
 }
 
 @media screen and (min-width: 320px) and (max-width: 678px) {
+  .new_modal_overlay .new_modal .back_btn {
+    display: flex;
+  }
 
   .new_modal_overlay .new_modal {
     width: 100%;
@@ -1116,8 +1129,84 @@ const onSubmit = () => {
     grid-area: 1 / 1 / 2 / 6;
   }
 
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(2) {
+    grid-area: 2 / 1 / 2 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(3) {
+    grid-area: 3 / 1 / 3 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(4) {
+    grid-area: 4 / 1 / 4 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(5) {
+    grid-area: 5 / 1 / 5 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(6) {
+    grid-area: 6 / 1 / 6 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(7) {
+    grid-area: 7 / 1 / 7 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(8) {
+    grid-area: 8 / 1 / 8 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(9) {
+    grid-area: 9 / 1 / 9 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(10) {
+    grid-area: 10 / 1 / 10 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(11) {
+    grid-area: 11 / 1 / 11 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(12) {
+    grid-area: 12 / 1 / 12 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(13) {
+    grid-area: 13 / 1 / 13 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(14) {
+    grid-area: 14 / 1 / 14 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(15) {
+    grid-area: 15 / 1 / 15 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(16) {
+    grid-area: 16 / 1 / 16 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(17) {
+    grid-area: 17 / 1 / 17 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(18) {
+    grid-area: 18 / 1 / 18 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(19) {
+    grid-area: 19 / 1 / 19 / 6;
+  }
+
+  .new_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(20) {
+    grid-area: 20 / 1 / 20 / 6;
+  }
+
   .new_modal_content_box .invoice_items .item_table .table_body .item_info:last-child {
-    grid-area: 2 / 1 / 3 / 6;
+    grid-area: 21 / 1 / 22 / 6;
   }
 
   .new_modal_content_box .invoice_items .item_table .table_body .item_info.new_row .sm_label,

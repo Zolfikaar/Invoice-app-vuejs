@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import arrowDownIcon from '@/components/icons/IconArrowDown.vue'
+import arrowLeft from '@/components/icons/IconArrowLeft.vue'
 import deleteIcon from '@/components/icons/IconDelete.vue'
 import plusIcon from '@/components/icons/IconPlus.vue'
 
@@ -315,15 +316,11 @@ const onEdit = () => {
 
     localStorage.setItem('invoices', JSON.stringify(invoices))
 
-
-
     closeModal()
-
 
   }
 
   emit('update-invoice', true)
-  // console.log(invoiceInfo.value.senderAddress.street);
 }
 
 const closeModal = () => emit('toggleEditModal')
@@ -335,6 +332,10 @@ const closeModal = () => emit('toggleEditModal')
   <div class="edit_modal_overlay" @click.self="closeModal">
 
     <div class="edit_modal">
+      <router-link class="sm_back_btn" @click="closeModal">
+        <arrowLeft />
+        <p>Go back</p>
+      </router-link>
       <h2>Edit <span>#</span>{{ invoice.id }}</h2>
 
       <div class="edit_modal_content_box">
@@ -551,6 +552,10 @@ const closeModal = () => emit('toggleEditModal')
   border-bottom-right-radius: 10px;
   padding: 30px;
   color: var(--txt-clr);
+}
+
+.edit_modal_overlay .edit_modal .sm_back_btn {
+  display: none;
 }
 
 .edit_modal_overlay .edit_modal h2 {
@@ -1036,9 +1041,17 @@ const closeModal = () => emit('toggleEditModal')
     left: 0;
     top: 80px;
   }
+
+  .edit_modal_overlay .edit_modal .sm_back_btn {
+    display: none;
+  }
 }
 
 @media screen and (min-width: 320px) and (max-width: 678px) {
+  .edit_modal_overlay .edit_modal .sm_back_btn {
+    display: flex;
+  }
+
   .edit_modal_overlay .edit_modal {
     left: 0;
     top: 80px;
@@ -1102,8 +1115,84 @@ const closeModal = () => emit('toggleEditModal')
     grid-area: 1 / 1 / 2 / 6;
   }
 
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(2) {
+    grid-area: 2 / 1 / 2 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(3) {
+    grid-area: 3 / 1 / 3 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(4) {
+    grid-area: 4 / 1 / 4 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(5) {
+    grid-area: 5 / 1 / 5 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(6) {
+    grid-area: 6 / 1 / 6 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(7) {
+    grid-area: 7 / 1 / 7 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(8) {
+    grid-area: 8 / 1 / 8 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(9) {
+    grid-area: 9 / 1 / 9 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(10) {
+    grid-area: 10 / 1 / 10 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(11) {
+    grid-area: 11 / 1 / 11 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(12) {
+    grid-area: 12 / 1 / 12 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(13) {
+    grid-area: 13 / 1 / 13 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(14) {
+    grid-area: 14 / 1 / 14 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(15) {
+    grid-area: 15 / 1 / 15 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(16) {
+    grid-area: 16 / 1 / 16 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(17) {
+    grid-area: 17 / 1 / 17 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(18) {
+    grid-area: 18 / 1 / 18 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(19) {
+    grid-area: 19 / 1 / 19 / 6;
+  }
+
+  .edit_modal_content_box .invoice_items .item_table .table_body .item_info:nth-child(20) {
+    grid-area: 20 / 1 / 20 / 6;
+  }
+
   .edit_modal_content_box .invoice_items .item_table .table_body .item_info:last-child {
-    grid-area: 2 / 1 / 3 / 6;
+    grid-area: 21 / 1 / 22 / 6;
   }
 
   .edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row .sm_label,

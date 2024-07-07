@@ -209,3 +209,31 @@ a {
 .invoices .invoice .invoice__status.pending-btn .layer span {
   background-color: var(--btn-pending);
 }
+
+
+.sm_back_btn,
+.back_btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80px;
+  height: 50px;
+  margin: 20px 0;
+}
+
+.sm_back_btn:hover,
+.back_btn:hover {
+  cursor: pointer;
+  color: var(--txt-gray);
+}
+
+.sm_back_btn:hover,
+.back_btn:hover {
+  color: var(--txt-secondary);
+
+}
+
+.sm_back_btn svg,
+.back_btn svg {
+  margin-bottom: 5px;
+}
