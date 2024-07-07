@@ -249,7 +249,6 @@ function checkItemList() {
     itemListPrice = ref()
     itemListTotal = ref(0)
 
-
     return itemData
 
   }
@@ -372,7 +371,6 @@ const onSubmit = () => {
 
     invoiceInfo.value.total = invoiceTotal
     invoiceInfo.value.status = 'pending'
-
 
     // NOW all data are ready to be saved in local storage
 
@@ -778,7 +776,6 @@ const onSubmit = () => {
 .new_modal_content_box .bill_to_group .dates_info .form_group.invoice_date .invoiceDate input[type="date"] {
   width: 100%;
   height: inherit;
-  /* padding: 0 20px; */
   border-radius: inherit;
   border: none;
   background-color: inherit;
@@ -875,18 +872,6 @@ const onSubmit = () => {
   color: #777F98;
 }
 
-
-
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-
-
 .new_modal_content_box .invoice_items .item_table .table_header {
   margin-top: 30px;
   display: grid;
@@ -920,13 +905,6 @@ const onSubmit = () => {
 .new_modal_content_box .invoice_items .item_table .table_header span:last-child {
   grid-area: 1 / 5 / 2 / 6;
 }
-
-
-
-
-
-
-
 
 .new_modal_content_box .invoice_items .item_table .table_body .item_info.new_row,
 .new_modal_content_box .invoice_items .item_table .table_body .item_info {
@@ -1020,19 +998,6 @@ const onSubmit = () => {
   fill: var(--danger-clr) !important;
 }
 
-
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-
-
-
-
 .new_modal_content_box .invoice_items .item_table .add_new_item_btn {
   height: 48px;
   width: 100%;
@@ -1048,12 +1013,10 @@ const onSubmit = () => {
   cursor: pointer;
 }
 
-
 .new_modal_content_box .invoice_items .item_table .errors_box {
   margin-top: 30px;
   color: var(--danger-clr);
 }
-
 
 .new_modal_overlay .new_modal .btns {
   display: flex;
@@ -1071,9 +1034,13 @@ const onSubmit = () => {
 
 
 @media screen and (min-width: 679px) and (max-width: 1180px) {
+  .new_modal_overlay {
+    top: 80px;
+  }
+
   .new_modal_overlay .new_modal {
     left: 0;
-    top: 80px;
+    top: 0;
   }
 }
 
@@ -1082,10 +1049,14 @@ const onSubmit = () => {
     display: flex;
   }
 
-  .new_modal_overlay .new_modal {
-    width: 100%;
-    left: 0;
+  .new_modal_overlay {
     top: 80px;
+  }
+
+  .new_modal_overlay .new_modal {
+    left: 0;
+    top: 0;
+    width: 100%;
   }
 
   .new_modal_content_box .bill_from_group .other_info,

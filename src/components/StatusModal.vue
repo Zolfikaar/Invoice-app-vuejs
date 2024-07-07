@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-// import { useInvoiceStore } from '@/stores/invoiceStore';
 
 const emit = defineEmits(['onChange', 'close'])
 
@@ -15,7 +14,6 @@ let invoice = ref({ ...props.invoice })
 let toggleStatusModal = ref()
 
 onMounted(() => {
-  // invoice.value = props.invoice
 })
 
 const onChange = () => {
@@ -26,7 +24,6 @@ const onChange = () => {
 
 const closeModal = () => {
   emit('close', toggleStatusModal.value)
-  // console.log('Close Delete Modal');
 }
 </script>
 

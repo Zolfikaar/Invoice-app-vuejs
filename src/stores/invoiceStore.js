@@ -1,4 +1,3 @@
-// import { ref, computed } from "vue";
 import axios from "axios";
 import { defineStore } from "pinia";
 
@@ -26,7 +25,6 @@ export const useInvoiceStore = defineStore("invoice", {
           this.invoices = response.data;
           localStorage.setItem("invoices", JSON.stringify(this.invoices));
         } catch (error) {
-          // console.error("Error loading data:", error);
           return error;
         }
       }

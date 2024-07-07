@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import arrowDownIcon from '@/components/icons/IconArrowDown.vue'
 import arrowLeft from '@/components/icons/IconArrowLeft.vue'
 import deleteIcon from '@/components/icons/IconDelete.vue'
@@ -39,14 +39,8 @@ let invoiceInfo = ref({
   total: editedInvoice.value.total,
 })
 
-onMounted(() => {
-
-})
-
 let showPaymentTerm = ref(false)
-const togglePaymentTerm = () => {
-  showPaymentTerm.value = !showPaymentTerm.value
-}
+const togglePaymentTerm = () => showPaymentTerm.value = !showPaymentTerm.value
 
 let paymentTermValue = ref(30)
 const changePaymentTermValue = (val) => {
@@ -117,7 +111,7 @@ let errors = ref({
   clientAddressCountry: false,
 })
 
-// // Check if all values in the errors object are true
+// Check if all values in the errors object are true
 let allEmpty = ref(true)
 function checkAllErrors() {
 
@@ -283,7 +277,6 @@ const addListItem = () => {
 
 
 const onEdit = () => {
-  // console.log(invoiceInfo.value);
 
   validateInvoiceInfo(invoiceInfo.value);
 
@@ -316,15 +309,14 @@ const onEdit = () => {
 
     localStorage.setItem('invoices', JSON.stringify(invoices))
 
+    emit('update-invoice', true)
     closeModal()
 
   }
 
-  emit('update-invoice', true)
 }
 
 const closeModal = () => emit('toggleEditModal')
-
 
 </script>
 
@@ -461,7 +453,7 @@ const closeModal = () => emit('toggleEditModal')
 
             <div class="table_body">
 
-              <div class="item_info" v-for="item in itemList">
+              <div class="item_info" v-for="item in invoiceInfo.items">
                 <span class="sm_label">Name</span>
                 <input type="text" class="item_name" v-model="item.name">
                 <span class="qty_span sm_label">Qty.</span>
@@ -530,7 +522,6 @@ const closeModal = () => emit('toggleEditModal')
 
   </div>
 </template>
-
 
 <style scoped>
 .edit_modal_overlay {
@@ -665,8 +656,6 @@ const closeModal = () => emit('toggleEditModal')
   margin-bottom: 50px;
 }
 
-.edit_modal_content_box .bill_to_group .other_info .form_group {}
-
 .edit_modal_content_box .bill_to_group .other_info .form_group label {
   display: block;
   color: var(--txt-clr);
@@ -690,8 +679,6 @@ const closeModal = () => emit('toggleEditModal')
   align-items: center;
   margin-bottom: 50px;
 }
-
-.edit_modal_content_box .bill_to_group .dates_info .form_group.invoice_date {}
 
 .edit_modal_content_box .bill_to_group .dates_info .form_group.payment_due {
   position: relative;
@@ -726,7 +713,6 @@ const closeModal = () => emit('toggleEditModal')
   color: rgba(126, 136, 195, .5);
   border: none;
 }
-
 
 .edit_modal_content_box .bill_to_group .dates_info .form_group.payment_due .paymentDue {
   color: var(--txt-clr);
@@ -800,19 +786,6 @@ const closeModal = () => emit('toggleEditModal')
   color: #777F98;
 }
 
-
-
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-
-
-
 .edit_modal_content_box .invoice_items .item_table .table_header {
   margin-top: 30px;
   display: grid;
@@ -847,16 +820,6 @@ const closeModal = () => emit('toggleEditModal')
 .edit_modal_content_box .invoice_items .item_table .table_header span:last-child {
   grid-area: 1 / 5 / 2 / 6;
 }
-
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-
 
 .edit_modal_content_box .invoice_items .item_table .table_body .item_info {
   display: grid;
@@ -893,29 +856,8 @@ const closeModal = () => emit('toggleEditModal')
   grid-area: 1 / 5 / 2 / 6;
 }
 
-/* =============================================== */
-/* =============================================== */
-/* =============================================== */
-/* =============================================== */
-
-/* .edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-column-gap: 20px;
-  grid-row-gap: 0px;
-  margin: 20px 0;
-}
-
-.edit_modal_content_box .invoice_items .item_table .table_body .item_info.new_row .item_total {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-} */
-
 .edit_modal_content_box .invoice_items .item_table .table_body .item_info input:focus {
-  /* border: 1px solid var(--primary-clr); */
   outline: 1px solid var(--primary-clr);
-  ;
 }
 
 .edit_modal_content_box .invoice_items .item_table .table_body .item_info input {
@@ -931,7 +873,6 @@ const closeModal = () => emit('toggleEditModal')
 .edit_modal_content_box .invoice_items .item_table .table_body .item_info input {
   color: var(--txt-clr);
   font-weight: bold;
-
 }
 
 .edit_modal_content_box .invoice_items .item_table .table_body .item_info .item_name {
@@ -969,18 +910,6 @@ const closeModal = () => emit('toggleEditModal')
 .edit_modal_content_box .invoice_items .item_table .table_body .item_info .delete_btn svg:hover path {
   fill: var(--danger-clr) !important;
 }
-
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-/* ======================================================= */
-
-
-
 
 .edit_modal_content_box .invoice_items .item_table .add_new_item_btn {
   height: 48px;
@@ -1037,9 +966,13 @@ const closeModal = () => emit('toggleEditModal')
 }
 
 @media screen and (min-width: 679px) and (max-width: 1180px) {
+  .edit_modal_overlay {
+    top: 80px;
+  }
+
   .edit_modal_overlay .edit_modal {
     left: 0;
-    top: 80px;
+    top: 0;
   }
 
   .edit_modal_overlay .edit_modal .sm_back_btn {
@@ -1052,9 +985,13 @@ const closeModal = () => emit('toggleEditModal')
     display: flex;
   }
 
+  .edit_modal_overlay {
+    top: 80px;
+  }
+
   .edit_modal_overlay .edit_modal {
     left: 0;
-    top: 80px;
+    top: 0;
     width: 100%;
     padding: 20px;
   }
@@ -1097,7 +1034,6 @@ const closeModal = () => emit('toggleEditModal')
     width: 98%;
     margin-left: 10px;
   }
-
 
   .edit_modal_content_box .invoice_items .item_table .table_header {
     display: none;

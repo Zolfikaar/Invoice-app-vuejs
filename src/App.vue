@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
 import Navbar from '@/components/Navbar.vue';
 
 let isDark = ref()
@@ -31,6 +31,5 @@ onMounted(() => {
 .main__content {
   width: 80%;
   color: var(--txt-clr);
-
 }
 </style>

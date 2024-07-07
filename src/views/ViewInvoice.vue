@@ -30,7 +30,6 @@ onMounted(() => {
 let showDeleteModal = ref(false)
 const toggleDeleteModal = () => {
   showDeleteModal.value = !showDeleteModal.value
-
 }
 
 const confirmDelete = () => {
@@ -61,7 +60,6 @@ const deleteInvoice = () => {
 let showEditModal = ref(false)
 const toggleEditModal = () => {
   showEditModal.value = !showEditModal.value
-
 }
 
 
@@ -100,7 +98,7 @@ const changeInvoiceStatus = () => {
 const rerenderInvoice = (updateTrigger) => {
 
   if (updateTrigger) {
-    invoice.value = currentInvoice;
+    invoice.value = JSON.parse(localStorage.getItem('invoices')).filter((item) => item.id == props.id)[0];
   }
 
   // call showNotification()
@@ -246,6 +244,10 @@ const rerenderInvoice = (updateTrigger) => {
   color: var(--txt-clr);
 }
 
+/* ======================================================================= */
+/* =========================== Invoice Header ============================ */
+/* ======================================================================= */
+
 .invoice__content .invoice__header {
   display: flex;
   justify-content: space-between;
@@ -303,8 +305,8 @@ const rerenderInvoice = (updateTrigger) => {
 }
 
 /* ======================================================================= */
-/* =============================== Content ================================ */
-/* ===================================== ================================= */
+/* =========================== Invoice Content =========================== */
+/* ======================================================================= */
 
 .invoice__content .content {
   border-radius: 10px;
@@ -348,7 +350,6 @@ const rerenderInvoice = (updateTrigger) => {
 
 .invoice__content .content .bottom {
   margin-top: 50px;
-  /* min-height: 264px; */
   background-color: var(--ele-light-clr);
   border-radius: 10px;
   color: var(--txt-clr);
@@ -419,6 +420,11 @@ const rerenderInvoice = (updateTrigger) => {
   margin-right: 10px;
 }
 
+/* ======================================================================= */
+/* =========================== Media Queries ============================= */
+/* ======================================================================= */
+
+/* ============================= Tablet Screen =========================== */
 @media screen and (min-width: 679px) and (max-width: 1180px) {
   .invoice__content {
     margin-top: 100px;
@@ -426,6 +432,7 @@ const rerenderInvoice = (updateTrigger) => {
   }
 }
 
+/* ============================= Mobile Screen =========================== */
 @media screen and (min-width: 320px) and (max-width: 678px) {
   .back_btn {
     margin-top: unset;

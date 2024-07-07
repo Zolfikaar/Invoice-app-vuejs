@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-// import { useInvoiceStore } from '@/stores/invoiceStore';
 
 const emit = defineEmits(['onDelete', 'close'])
 
@@ -18,13 +17,11 @@ onMounted(() => { })
 
 const onDelete = () => {
   emit('onDelete', invoice.value)
-  // console.log('Confirm Delete');
 }
 
 
 const closeModal = () => {
   emit('close', toggleDeleteModal.value)
-  // console.log('Close Delete Modal');
 }
 </script>
 

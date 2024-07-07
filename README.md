@@ -27,8 +27,9 @@ Users should be able to:
 - Filter invoices by status (draft/pending/paid). ✅
 - Toggle light and dark mode. ✅
 - **Bonus**: Keep track of any changes, even after refreshing the browser (`localStorage` could be used for this if you're not building out a full-stack app). ✅
-- **My Bonus**: I added a confirm modal for changing invoice status ✅
-- **My Bonus**: Clicking outside the modals will close the modal ✅
+- **My Addition #1**: I added a confirm modal for changing invoice status ✅
+- **My Addition #2**: Clicking outside the modals will close the modal ✅
+- **My Addition #3**: I added a rate limter to prevent generating more than 5 draft invoice per minute ✅
 
 ### Screenshot
 
