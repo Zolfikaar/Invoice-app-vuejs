@@ -1,6 +1,5 @@
 <script setup>
 import { useInvoiceStore } from '@/stores/invoiceStore'
-import axios from "axios"
 import { ref, onMounted } from 'vue'
 import illustration from '@/components/icons/illustrationEmpty.vue'
 import plusIcon from '@/components/icons/IconPlus.vue'

@@ -20,7 +20,7 @@ export const useInvoiceStore = defineStore("invoice", {
       } else {
         // Check if 'data.json' file is available
         try {
-          let response = await axios.get("/data.json");
+          let response = await axios.get("/Invoice-app-vuejs/data.json");
 
           this.invoices = response.data;
           localStorage.setItem("invoices", JSON.stringify(this.invoices));

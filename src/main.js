@@ -13,7 +13,6 @@ const app = createApp(App);
 app.use(createPinia());
 
 Alpine.start();
-// app.use(Alpine);
 app.use(router);
 
 app.mount("#app");
