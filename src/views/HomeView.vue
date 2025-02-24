@@ -10,8 +10,9 @@ import NewModal from '@/components/NewModal.vue'
 
 const emit = defineEmits(['invoice-updated'])
 
+
 let showFilters = ref(false)
-const showHideFiltersBox = () => {
+const toggleFilterDropdown = () => {
   showFilters.value = !showFilters.value
 }
 
@@ -101,7 +102,7 @@ const toggleNewModal = () => {
       <div class="right">
         <div class="filters lg_filters">
           Filter by
-          <div class="filter__select" @click="showHideFiltersBox">
+          <div class="filter__select" @click="toggleFilterDropdown" v-click-outside="() => (showFilters = false)">
             <span>status</span>
             <arrowDownIcon />
           </div>
@@ -121,7 +122,7 @@ const toggleNewModal = () => {
 
         <div class="filters sm_filters">
           Filter
-          <div class="filter__select" @click="showHideFiltersBox">
+          <div class="filter__select" @click="toggleFilterDropdown">
             <arrowDownIcon />
           </div>
           <div class="filters-box" v-if="showFilters">
