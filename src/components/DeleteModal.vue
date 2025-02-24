@@ -42,7 +42,9 @@ const closeModal = () => {
 
 <style>
 .delete_modal_overlay {
-  position: absolute;
+  position: fixed;
+  top: 0;
+  left: 0;
   z-index: 6;
   background-color: rgba(0, 0, 0, .8);
   width: 100%;
