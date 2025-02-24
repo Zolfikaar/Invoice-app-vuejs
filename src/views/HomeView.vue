@@ -102,7 +102,7 @@ const toggleNewModal = () => {
       <div class="right">
         <div class="filters lg_filters">
           Filter by
-          <div class="filter__select" @click="toggleFilterDropdown" v-click-outside="() => (showFilters = false)">
+          <div class="filter__select" @click="toggleFilterDropdown">
             <span>status</span>
             <arrowDownIcon />
           </div>
@@ -534,6 +534,10 @@ const toggleNewModal = () => {
 
   .content__header .right .create__invoice__btn .sm_new_btn {
     display: block;
+  }
+
+  .content__header .right .filters .filters-box {
+    right: 130px;
   }
 
   /* ============= invoice style ================= */
