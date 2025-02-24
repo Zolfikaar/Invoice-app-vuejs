@@ -551,7 +551,7 @@ const toggleNewModal = () => {
   }
 
   .invoices.sm_invoices .invoice {
-    height: 134px;
+    height: -webkit-fill-available;
   }
 
   .invoices.sm_invoices .invoice a {
